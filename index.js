@@ -40,9 +40,7 @@ app.get('/admin/horses', function (req, res) {
 
 
 io.on('connection', function(socket){
-
     console.log('new user connected');
-
     socket.on('user connected', function(nick){
         socket.username = nick;
         socket.emit('user connected', msgHistory, rooms);

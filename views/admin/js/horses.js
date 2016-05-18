@@ -70,5 +70,4 @@ addHorse.addEventListener('click', function(){
         }
     );
     refresh();
-    alert("Dodano: \n\nNazwa: " + nazwa + ",\nPłeć: " + plec + ",\nHodowca: " + hodowca);
 });
