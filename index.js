@@ -17,6 +17,13 @@ var secret = process.env.APP_SECRET || 'tajne';
 var configDB = require('./config/database');
 
 var Horse = require('./models/horse.js');
+
+// Konfiguracja Logowania ------------------------------------
+var Account = require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+// ---------
 mongoose.connect('mongodb://localhost/projekt');
 var db = mongoose.connection;
 db.on('open', function () {
@@ -37,6 +44,10 @@ app.use(expressSession({
 app.get('/admin/horses', function (req, res) {
     res.render('admin/horses');
 });
+
+// Passport
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 
 io.on('connection', function(socket){
