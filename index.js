@@ -24,6 +24,7 @@ passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 // ---------
+
 mongoose.connect('mongodb://localhost/projekt');
 var db = mongoose.connection;
 db.on('open', function () {
@@ -45,9 +46,46 @@ app.get('/admin/horses', function (req, res) {
     res.render('admin/horses');
 });
 
-// Passport
+// Passport ------------------------------------
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
+ app.get('/', function (req, res) {
+      res.render('index', { 
+          user : req.user,
+          login: req.isAuthenticated() });
+  });
+    
+  app.get('/admin/register', function(req, res) {
+      res.render('register', { });
+  });
+
+  app.post('/admin/register', function(req, res) {
+    Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko}), req.body.password, function(err, account) {
+        if (err) {
+            return res.render('register', { account : account });
+        }
+
+        passport.authenticate('local')(req, res, function () {
+          res.redirect('/');
+        });
+    });
+  });
+
+  app.get('/login', function(req, res) {
+      res.render('login', { user : req.user });
+  });
+
+  app.post('/login', passport.authenticate('local'), function(req, res) {
+      res.redirect('/');
+  });
+
+  app.get('/logout', function(req, res) {
+      req.logout();
+      res.redirect('/');
+  });
+
+// ---------
 
 
 io.on('connection', function(socket){
