@@ -35,15 +35,27 @@ passport.deserializeUser(Account.deserializeUser());
 
 app.set('view engine', 'ejs');
 
+
+ app.use(bodyParser.urlencoded({
+    extended: false
+}));
+app.use(cookieParser());
+var secret = process.env.APP_SECRET || 'tajne';
+app.use(expressSession({
+    secret: secret,
+    resave: false,
+    saveUninitialized: false
+}));
+
 //app.use(express.logger());
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser('artur2016Secret'));
-app.use(express.session());
+//app.use(express.bodyParser()); // tego nie ma
+//app.use(express.methodOverride()); // tego też
+//app.use(express.cookieParser('artur2016Secret'));
+//app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(app.router);
+//app.use(express.static(path.join(__dirname, 'public')));
 
 // Baza ------------------------------------
 
