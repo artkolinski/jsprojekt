@@ -1,31 +1,51 @@
 /*jshint node: true */
 var express = require('express');
+var path = require('path');
+var http = require('http');
+var mongoose = require('mongoose'); 
 var app = express();
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var mongoose = require('mongoose');
+
 var serveStatic = require('serve-static');
-var http = require('http').Server(app);
+
 var io = require('socket.io')(http);
-var mongoose = require('mongoose'); 
+
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
 
 var port = process.env.PORT || 3000;
-var secret = process.env.APP_SECRET || 'tajne';
 var configDB = require('./config/database');
-
 var Horse = require('./models/horse.js');
 
 // Konfiguracja Logowania ------------------------------------
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var Account = require('./models/account');
+
+
+//app.use(app.router);
+//app.use(static(path.join(__dirname, 'public')));
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 // ---------
+
+app.set('view engine', 'ejs');
+
+//app.use(express.logger());
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.cookieParser('artur2016Secret'));
+app.use(express.session());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Baza ------------------------------------
 
 mongoose.connect('mongodb://localhost/projekt');
 var db = mongoose.connection;
@@ -33,16 +53,7 @@ db.on('open', function () {
     console.log('Connected with MongoDB!');
 });
 
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-app.use(cookieParser());
-app.use(expressSession({
-    secret: secret,
-    resave: false,
-    saveUninitialized: false
-}));
+// ---------
 
 app.get('/admin/horses', function (req, res) {
     res.render('admin/horses');
@@ -55,14 +66,14 @@ app.get('/admin/horses', function (req, res) {
           login: req.isAuthenticated() });
   });
     
-  app.get('/admin/register', function(req, res) {
-      res.render('admin/register', { });
+  app.get('/register', function(req, res) {
+      res.render('register', { });
   });
 
-  app.post('/admin/register', function(req, res) {
+  app.post('/register', function(req, res) {
     Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko}), req.body.password, function(err, account) {
         if (err) {
-            return res.render('admin/register', { account : account });
+            return res.render('register', { account : account });
         }
 
         passport.authenticate('local')(req, res, function () {
