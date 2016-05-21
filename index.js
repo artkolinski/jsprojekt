@@ -97,7 +97,6 @@ app.get('/admin/horses', function (req, res) {
 
 // ---------
 
-
 io.on('connection', function(socket){
     console.log('new user connected');
     socket.on('user connected', function(nick){
@@ -143,6 +142,20 @@ io.on('connection', function(socket){
     });
 });
 
-http.listen(port, function(){
-    console.log('listening on *:' + port);
+// SSL
+
+var fs = require('fs');
+var https = require('https');
+
+var options = {
+  key: fs.readFileSync('server/key.pem'),
+  cert: fs.readFileSync('server/server.crt'),
+};
+
+https.createServer(options, app).listen(443, function () {
+   console.log('https://localhost  Started!');
 });
+
+//http.listen(port, function(){
+ //   console.log('listening on *:' + port);
+//});
