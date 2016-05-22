@@ -1,42 +1,34 @@
 /*jshint node: true */
 var express = require('express');
 var path = require('path');
-var http = require('http');
 var mongoose = require('mongoose'); 
 var app = express();
+var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var mongoose = require('mongoose');
-
 var serveStatic = require('serve-static');
-
 var io = require('socket.io')(http);
-
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
 
-var port = process.env.PORT || 3000;
+//var port = process.env.PORT || 3000;
+app.set('port', process.env.PORT || 3000);
 var configDB = require('./config/database');
-var Horse = require('./models/horse.js');
+var Horse = require('./models/horse');
 
 // Konfiguracja Logowania ------------------------------------
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var Account = require('./models/account');
-
-
-//app.use(app.router);
-//app.use(static(path.join(__dirname, 'public')));
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
+
 // ---------
-
 app.set('view engine', 'ejs');
-
-
- app.use(bodyParser.urlencoded({
+app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
@@ -47,15 +39,8 @@ app.use(expressSession({
     saveUninitialized: false
 }));
 
-//app.use(express.logger());
-//app.use(express.bodyParser()); // tego nie ma
-//app.use(express.methodOverride()); // tego też
-//app.use(express.cookieParser('artur2016Secret'));
-//app.use(express.session());
 app.use(passport.initialize());
 app.use(passport.session());
-//app.use(app.router);
-//app.use(express.static(path.join(__dirname, 'public')));
 
 // Baza ------------------------------------
 
@@ -115,7 +100,6 @@ io.on('connection', function(socket){
         socket.username = nick;
         socket.emit('user connected', msgHistory, rooms);
     });
-
     socket.on('add horse', function(data){
         console.log('add horse');
         var playerModel = require('./models/horse.js');
@@ -129,26 +113,22 @@ io.on('connection', function(socket){
                 console.log(item);
             });
     });
-
     socket.on('get horses', function () {
         console.log('get all horses');
         Horse.find({}).exec(function (err, players){
         socket.emit('get horses', players);
         });
     });
-
     socket.on('remove horse', function (data) {
         console.log('remove horse: ' + data.id);
         Horse.find({ _id: data.id }).remove().exec();
     });
-
     socket.on('update horse', function (data){
         console.log('update horse: ' + data.id);
         Horse.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
 
         });
     });
-
     socket.on('disconnect', function(){
         console.log('user disconnected');
     });
@@ -168,6 +148,8 @@ https.createServer(options, app).listen(443, function () {
    console.log('https://localhost  Started!');
 });
 
-//http.listen(port, function(){
- //   console.log('listening on *:' + port);
-//});
+
+// Bez szyfrowania
+app.listen(app.get('port'), function(){
+  console.log(("Express server listening on port " + app.get('port')))
+});
