@@ -148,8 +148,12 @@ https.createServer(options, app).listen(443, function () {
    console.log('https://localhost  Started!');
 });
 
-
 // Bez szyfrowania
-app.listen(app.get('port'), function(){
-  console.log(("Express server listening on port " + app.get('port')))
+//app.listen(app.get('port'), function(){
+ // console.log(("Express server listening on port " + app.get('port')))
+//});
+
+// Sockety
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
