@@ -3,6 +3,7 @@
 <head>
     <title>Konie</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 </head>
 <body>
   <div id="horseContainer">
@@ -22,8 +23,18 @@
                 </tr>
             </table>
         </div>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <!-- <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script> 
+        <script src="/socket.io/socket.io.js"></script>         -->
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.js"></script>
+
+        <script>
+          var URL_SERVER = 'https://localhost:443';
+          var socket = io.connect(URL_SERVER);
+
+          socket.on('message', function(data) {
+            alert(data);
+          });
+        </script>
         <script src="js/horses.js"></script>
  </div>
 </body>
