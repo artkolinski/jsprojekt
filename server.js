@@ -23,7 +23,6 @@ app.use(expressSession({
 }));
 app.set('port', process.env.PORT || 3000);
 var configDB = require('./server/database');
-var Horse = require('./models/horse');
 
 // Konfiguracja Logowania ------------------------------------
 var passport = require('passport');
@@ -48,20 +47,18 @@ require('./server/routes.js')(app);
 // Sockety ------------------------------------
 require('./server/sockets.js')(io);
 
-// SSL ------------------------------------
+// HTTPS ------------------------------------
 var fs = require('fs');
 var https = require('https');
-
 var options = {
   key: fs.readFileSync('server/encryption/key.pem'),
   cert: fs.readFileSync('server/encryption/server.crt'),
 };
-
 https.createServer(options, app).listen(443, function () {
    console.log('https://localhost  Started!');
 });
 
-// Sockety ------------------------------------
+// HTTP ------------------------------------
 http.listen(3000, function(){
   console.log('http://localhost:3000  Started!');
 });
