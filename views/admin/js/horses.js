@@ -1,6 +1,8 @@
 /* jshint browser: true, devel: true, jquery: true, esnext: true, node: true   */
 /* global io: false */
 var addHorse = document.getElementById('addHorse');
+//var URL_SERVER = 'https://localhost:443';
+//var socket = io.connect(URL_SERVER);
 var socket = io();
 var refresh = function(){
     console.log('get horses');

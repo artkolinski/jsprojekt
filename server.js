@@ -7,7 +7,6 @@ var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
-var mongoose = require('mongoose');
 var serveStatic = require('serve-static');
 var io = require('socket.io')(http);
 app.use(serveStatic("views"));
@@ -46,46 +45,8 @@ db.on('open', function () {
 // Routing ------------------------------------
 require('./server/routes.js')(app);
 
-// ------------------------------------
-io.on('connection', function(socket){
-    console.log('new user connected');
-    socket.on('user connected', function(nick){
-        socket.username = nick;
-        socket.emit('user connected', msgHistory, rooms);
-    });
-    socket.on('add horse', function(data){
-        console.log('add horse');
-        var playerModel = require('./models/horse.js');
-            var player = new playerModel({
-                nazwa: data.nazwa,
-                plec: data.plec,
-                hodowca: data.hodowca
-            });
-            player.save(function (err, item) {
-                console.dir(err);
-                console.log(item);
-            });
-    });
-    socket.on('get horses', function () {
-        console.log('get all horses');
-        Horse.find({}).exec(function (err, players){
-        socket.emit('get horses', players);
-        });
-    });
-    socket.on('remove horse', function (data) {
-        console.log('remove horse: ' + data.id);
-        Horse.find({ _id: data.id }).remove().exec();
-    });
-    socket.on('update horse', function (data){
-        console.log('update horse: ' + data.id);
-        Horse.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
-
-        });
-    });
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-    });
-});
+// Sockety ------------------------------------
+require('./server/sockets.js')(io);
 
 // SSL ------------------------------------
 var fs = require('fs');
@@ -104,3 +65,4 @@ https.createServer(options, app).listen(443, function () {
 http.listen(3000, function(){
   console.log('http://localhost:3000  Started!');
 });
+
