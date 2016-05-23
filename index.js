@@ -15,7 +15,7 @@ app.set('view engine', 'ejs');
 
 //var port = process.env.PORT || 3000;
 app.set('port', process.env.PORT || 3000);
-var configDB = require('./config/database');
+var configDB = require('./server/database');
 var Horse = require('./models/horse');
 
 // Konfiguracja Logowania ------------------------------------
