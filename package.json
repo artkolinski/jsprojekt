@@ -1,7 +1,7 @@
 {
   "name": "Projekt",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.10.2",

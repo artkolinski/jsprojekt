@@ -12,22 +12,6 @@ var serveStatic = require('serve-static');
 var io = require('socket.io')(http);
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
-
-//var port = process.env.PORT || 3000;
-app.set('port', process.env.PORT || 3000);
-var configDB = require('./server/database');
-var Horse = require('./models/horse');
-
-// Konfiguracja Logowania ------------------------------------
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var Account = require('./models/account');
-passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
-
-// ---------
-app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
     extended: false
 }));
@@ -38,62 +22,31 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: false
 }));
+app.set('port', process.env.PORT || 3000);
+var configDB = require('./server/database');
+var Horse = require('./models/horse');
 
+// Konfiguracja Logowania ------------------------------------
+var passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
+var LocalStrategy = require('passport-local').Strategy;
+var Account = require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
 
 // Baza ------------------------------------
-
 mongoose.connect('mongodb://localhost/projekt');
 var db = mongoose.connection;
 db.on('open', function () {
     console.log('Connected with MongoDB!');
 });
 
-// ---------
+// Routing ------------------------------------
+require('./server/routes.js')(app);
 
-app.get('/admin/horses', function (req, res) {
-    res.render('admin/horses');
-});
-
-// Passport ------------------------------------
- app.get('/', function (req, res) {
-      res.render('index', { 
-          user : req.user,
-          login: req.isAuthenticated() });
-  });
-    
-  app.get('/register', function(req, res) {
-      res.render('register', { });
-  });
-
-  app.post('/register', function(req, res) {
-    Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko}), req.body.password, function(err, account) {
-        if (err) {
-            return res.render('register', { account : account });
-        }
-
-        passport.authenticate('local')(req, res, function () {
-          res.redirect('/');
-        });
-    });
-  });
-
-  app.get('/login', function(req, res) {
-      res.render('login', { user : req.user });
-  });
-
-  app.post('/login', passport.authenticate('local'), function(req, res) {
-      res.redirect('/');
-  });
-
-  app.get('/logout', function(req, res) {
-      req.logout();
-      res.redirect('/');
-  });
-
-// ---------
-
+// ------------------------------------
 io.on('connection', function(socket){
     console.log('new user connected');
     socket.on('user connected', function(nick){
@@ -134,26 +87,20 @@ io.on('connection', function(socket){
     });
 });
 
-// SSL
-
+// SSL ------------------------------------
 var fs = require('fs');
 var https = require('https');
 
 var options = {
-  key: fs.readFileSync('server/key.pem'),
-  cert: fs.readFileSync('server/server.crt'),
+  key: fs.readFileSync('server/encryption/key.pem'),
+  cert: fs.readFileSync('server/encryption/server.crt'),
 };
 
 https.createServer(options, app).listen(443, function () {
    console.log('https://localhost  Started!');
 });
 
-// Bez szyfrowania
-//app.listen(app.get('port'), function(){
- // console.log(("Express server listening on port " + app.get('port')))
-//});
-
-// Sockety
+// Sockety ------------------------------------
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+  console.log('http://localhost:3000  Started!');
 });
