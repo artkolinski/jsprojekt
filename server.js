@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var serveStatic = require('serve-static');
-var io = require('socket.io')(http);
+
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -45,9 +45,6 @@ db.on('open', function () {
 // Routing ------------------------------------
 require('./server/routes.js')(app, passport, Account);
 
-// Sockety ------------------------------------
-require('./server/sockets.js')(io, Horse);
-
 // HTTPS ------------------------------------
 var fs = require('fs');
 var https = require('https');
@@ -55,12 +52,18 @@ var options = {
   key: fs.readFileSync('server/encryption/key.pem'),
   cert: fs.readFileSync('server/encryption/server.crt'),
 };
-https.createServer(options, app).listen(443, function () {
+var ssl = https.createServer(options, app);
+ssl.listen(443, function () {
    console.log('https://localhost  Started!');
 });
 
-// HTTP ------------------------------------
+// Sockety ------------------------------------
+var io = require('socket.io')(ssl);
+require('./server/sockets.js')(io, Horse);
+
+/* HTTP ------------------------------------
 http.listen(3000, function(){
-  console.log('http://localhost:3000  Started!');
+ console.log('http://localhost:3000  Started!');
 });
+*/
 
