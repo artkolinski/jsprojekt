@@ -3,33 +3,46 @@
 <head>
     <title>Konie</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    
+    <link rel="stylesheet" type="text/css" href="css/jquerysctipttop.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 </head>
 <body>
   <div id="horseContainer">
        <div id="editHorse">
        </div>
        <div id="horse">
-            <table id="horseTab">
-                <tr>
-                    <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th>
-                </tr>
-                <tr>
-                   <td><input id="nazwa"/></td>
-                   <td><select id="plec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td>
-                   <td><input id="hodowca"/></td>
-                   <td><button id="addHorse">Dodaj</button></td>
-                   <td></td>
-                </tr>
+            <table id="horseTab" class="table table-bordered table-striped">
+               <thead>
+                    <tr>
+                        <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th>
+                    </tr>
+                    <tr>
+                       <td><input id="nazwa"/></td>
+                       <td><select id="plec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td>
+                       <td><input id="hodowca"/></td>
+                       <td><button id="addHorse">Dodaj</button></td>
+                       <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
             </table>
         </div>
-        <!-- <script src="/socket.io/socket.io.js"></script> 
-        <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script> 
-        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>               
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.js"></script>-->
+         <script src="js/jquery-1.11.1.js"></script> 
+        <!--<script src="js/jquery-1.12.3.min.js"></script> 
+        <script src="js/jquery.dataTables.min.js"></script> 
+        <script src="js/jquery-simple-pagination-plugin.js"></script>-->     
+        <script src="js/jquery.min.js"></script> 
+        <script src="js/jquery-ui.min.js"></script> 
+        <script src="js/paging.js"></script>  
         <script src="js/socket.io.js"></script>
-        <script src="js/jquery-1.11.1.js"></script> 
-        <script src="js/horses.js"></script>
+        <script src="js/horses.js"></script>    
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#horseTab').paging({limit:5});
+            });
+        </script>
  </div>
 </body>
 </html>

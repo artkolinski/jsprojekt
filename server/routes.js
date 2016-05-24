@@ -1,6 +1,5 @@
 /*jshint node: true */
-module.exports = function (app, passport, Account) {
-    
+module.exports = function (app, passport, Account) { 
     app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');
     });
