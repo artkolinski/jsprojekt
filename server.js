@@ -23,6 +23,7 @@ app.use(expressSession({
 }));
 app.set('port', process.env.PORT || 3000);
 var configDB = require('./server/database');
+var Horse = require('./models/horse');
 
 // Konfiguracja Logowania ------------------------------------
 var passport = require('passport');
@@ -42,10 +43,10 @@ db.on('open', function () {
 });
 
 // Routing ------------------------------------
-require('./server/routes.js')(app);
+require('./server/routes.js')(app, passport, Account);
 
 // Sockety ------------------------------------
-require('./server/sockets.js')(io);
+require('./server/sockets.js')(io, Horse);
 
 // HTTPS ------------------------------------
 var fs = require('fs');

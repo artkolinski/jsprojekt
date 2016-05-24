@@ -1,6 +1,5 @@
 /*jshint node: true */
-var passport = require('passport');
-module.exports = function (app) {
+module.exports = function (app, passport, Account) {
     
     app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');

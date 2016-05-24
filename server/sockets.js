@@ -1,6 +1,6 @@
 /*jshint node: true */
-var Horse = require('.././models/horse');
-module.exports = function (io) {
+//var Horse = require('.././models/horse');
+module.exports = function (io, Horse) {
     io.on('connection', function(socket){
         console.log('new user connected');
         socket.on('user connected', function(nick){
