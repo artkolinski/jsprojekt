@@ -1,31 +1,38 @@
 /* jshint browser: true, devel: true, jquery: true, esnext: true, node: true   */
 /* global io: false */
 var addHorse = document.getElementById('addHorse');
-//var URL_SERVER = 'https://localhost:443';
-//var socket = io.connect(URL_SERVER);
 var socket = io();
+var hTable = $('#horseTab').DataTable({
+    "iDisplayLength": 10,
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
+    "createdRow" : function( row, data, index ) {
+        if( data.hasOwnProperty("id") ) {
+            row.id = data.id;
+        }       
+    }
+});
 
 var refresh = function(){
     console.log('get horses');
     socket.emit('get horses');
     socket.on('get horses', function (horses) {
        $('#tbody').empty();
+        hTable.clear();
         horses.forEach(function (horse) {
-            //id="' + horse._id + '"
-            //$('#horseTab').append
-            var hTable = $('#horseTab').DataTable();
-           // hTable.row.add('<tr  ><td>' + horse.nazwa + '</td><td>' + horse.plec + '</td><td>' + horse.hodowca + '</td><td><button //class="modifyHorse">Edycja</button></td><td><button class="deleteHorse">Usuń</button></td></tr>');
-             hTable.row.add([horse.nazwa,horse.plec, horse.hodowca,'<button class="modifyHorse">Edycja</button>','<button class="deleteHorse">Usuń</button>']).draw( false );
-            $('.modifyHorse:last').click(function(){
+            var data =[horse.nazwa,horse.plec, horse.hodowca,'<button class="modify-' + horse._id + '">Edycja</button>','<button class="delete-' + horse._id + '">Usuń</button>'];
+            data.id = horse._id;
+            hTable.row.add(data).draw();
+            $('.modify-'+horse._id).click(function(){
                 $('#horse').css("visibility", "hidden");
                 
                 var site = '<div id="editForm">';
-                site += 'Nazwa: <input id="editNazwa" value='+horse.nazwa+' /></td></br>';
-                site += 'Plec: <select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td></br>';
-                site += 'Hodowca: <input id="editHodowca" value='+horse.hodowca+' /></td></br>';
-                site += '<button id="editOk">Edytuj</button>';
-                site += '<button id="editCancel">Anuluj</button></br>';
-                site += '</div>';
+                site += '<table class="table table-bordered table-striped"><tr><th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th></tr>';
+                site += '<tr><th><input id="editNazwa" value='+horse.nazwa+' /></td></th></br>';
+                site += '<th><select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td></th></br>';
+                site += '<th><input id="editHodowca" value='+horse.hodowca+' /></td></th></br>';
+                site += '<th><button id="editOk">Edytuj</button></th>';
+                site += '<th><button id="editCancel">Anuluj</button></th></tr>';
+                site += '</table></div>';
                 $('#editHorse').append(site);
 
                 var editForm = document.getElementById('editForm');
@@ -51,10 +58,9 @@ var refresh = function(){
                 });
             });
 
-            $('.deleteHorse:last').click(function(){
-                var id = $(this).parent().parent().prop('id');
-                console.log('remove horse: ' + id);
-                socket.emit('remove horse', { id: id });
+            $('.delete-'+horse._id).click(function(){
+                console.log('remove horse: ' + horse._id);
+                socket.emit('remove horse', { id: horse._id });
                 refresh();
             });
         });
