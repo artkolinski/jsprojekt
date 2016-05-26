@@ -4,13 +4,18 @@ var addHorse = document.getElementById('addHorse');
 //var URL_SERVER = 'https://localhost:443';
 //var socket = io.connect(URL_SERVER);
 var socket = io();
+
 var refresh = function(){
     console.log('get horses');
     socket.emit('get horses');
     socket.on('get horses', function (horses) {
-        $('.horseRow').remove();
+       $('#tbody').empty();
         horses.forEach(function (horse) {
-            $('#horseTab').append('<tr id="' + horse._id + '" class="horseRow"><td>' + horse.nazwa + '</td><td>' + horse.plec + '</td><td>' + horse.hodowca + '</td><td><button class="modifyHorse">Edycja</button></td><td><button class="deleteHorse">Usuń</button></td></tr>');
+            //id="' + horse._id + '"
+            //$('#horseTab').append
+            var hTable = $('#horseTab').DataTable();
+           // hTable.row.add('<tr  ><td>' + horse.nazwa + '</td><td>' + horse.plec + '</td><td>' + horse.hodowca + '</td><td><button //class="modifyHorse">Edycja</button></td><td><button class="deleteHorse">Usuń</button></td></tr>');
+             hTable.row.add([horse.nazwa,horse.plec, horse.hodowca,'<button class="modifyHorse">Edycja</button>','<button class="deleteHorse">Usuń</button>']).draw( false );
             $('.modifyHorse:last').click(function(){
                 $('#horse').css("visibility", "hidden");
                 
@@ -57,7 +62,7 @@ var refresh = function(){
 };
 
 window.onload = function() {
-        refresh();
+    refresh();
 };
 
 addHorse.addEventListener('click', function(){
