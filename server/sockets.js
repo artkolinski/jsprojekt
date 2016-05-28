@@ -1,11 +1,11 @@
 /*jshint node: true */
 module.exports = function (io, Horse, Account) {
     io.on('connection', function(socket){
-        console.log('new user connected');
+        /*console.log('new user connected');
         socket.on('user connected', function(nick){
             socket.username = nick;
             socket.emit('user connected');
-        });
+        });*/
         
         // Horses -------------------------       
         socket.on('add horse', function(data){
@@ -56,9 +56,9 @@ module.exports = function (io, Horse, Account) {
             });
         });
         
-        socket.on('disconnect', function(){
+        /*socket.on('disconnect', function(){
             console.log('user disconnected');
-        });
+        });*/
     });   
 };
 
