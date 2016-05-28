@@ -4,25 +4,33 @@
     <title>Rejestracja</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/css/main.css" rel="stylesheet" media="screen"/>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
   </head>
   <body></body>
-  <div class="container">
-    <h1>Rejestracja</h1>
-    <p class="lead">Tworzenie nowego użytkownika.</p><br>
-    <form role="form" action="/register" method="post" style="max-width: 300px;">
-      <div class="form-group">
-        <input type="text" name="nazwisko" placeholder="Podaj Nazwisko" class="form-control">
-      </div>
-      <div class="form-group">
-        <input type="text" name="username" placeholder="Podaj Login" class="form-control">
-      </div>
-      <div class="form-group">
-        <input type="password" name="password" placeholder="Hasło" class="form-control">
-      </div>
-      <button type="submit" class="btn btn-default">Rejestracja</button>&nbsp;<a href="/">
-        <button type="button" class="btn btn-primary">Anuluj</button></a>
-    </form>
-  </div>
+  <div id="wrapper">
+      <% include admin/sidebar %>
+      <div id="page-content-wrapper">
+          <div class="page-content inset">
+              <div class="container">
+                <h1>Rejestracja</h1>
+                <p class="lead">Tworzenie nowego użytkownika.</p><br>
+                <form role="form" action="/register" method="post" style="max-width: 300px;">
+                  <div class="form-group">
+                    <input type="text" name="nazwisko" placeholder="Podaj Nazwisko" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" name="username" placeholder="Podaj Login" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" name="password" placeholder="Hasło" class="form-control">
+                  </div>
+                  <button type="submit" class="btn btn-default">Rejestracja</button>&nbsp;<a href="/">
+                    <button type="button" class="btn btn-primary">Anuluj</button></a>
+                </form>
+              </div>
+          </div>
+        </div>
+    </div>  
 </html>
