@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose'); 
 var app = express();
-//var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
@@ -38,7 +37,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Role ------------------------------------
-/*var user = new ConnectRoles({
+var role = new ConnectRoles({
   failureHandler: function (req, res, action) {
     // optional function to customise code that runs when
     // user fails authorisation
@@ -51,8 +50,29 @@ passport.deserializeUser(Account.deserializeUser());
     }
   }
 });
-app.use(user.middleware());*/
+app.use(role.middleware());
 
+role.use(function (req, action) {
+  if (!req.isAuthenticated()) return action === 'access home page';
+});
+
+role.use(function(req, action){
+    if(req.isAuthenticated() && action != 'access judge pages' && action != 'access admin pages')
+      return true;
+});
+
+role.use('access judge pages', function (req) {
+  console.log('access judge pages');
+  if (req.user.role === 'sedzia') {
+    return true;
+  }
+});
+
+role.use(function (req) {
+  if (req.user.role === 'admin') {
+    return true;
+  }
+});
 
 // Baza ------------------------------------
 mongoose.connect('mongodb://localhost/projekt');
@@ -62,7 +82,7 @@ db.on('open', function () {
 });
 
 // Routing ------------------------------------
-require('./server/routes.js')(app, passport, Account);
+require('./server/routes.js')(app, passport, Account, role);
 
 // HTTPS ------------------------------------
 var fs = require('fs');

@@ -1,10 +1,10 @@
 /*jshint node: true */
-module.exports = function (app, passport, Account) { 
-    app.get('/admin/horses', function (req, res) {
+module.exports = function (app, passport, Account, role) { 
+    app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
         res.render('admin/horses');
     });
     
-    app.get('/admin/accounts', function (req, res) {
+    app.get('/admin/accounts', role.can('access admin pages'),function (req, res) {
         res.render('admin/accounts');
     });
 
