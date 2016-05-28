@@ -1,11 +1,13 @@
 /*jshint node: true */
-module.exports = function (io, Horse) {
+module.exports = function (io, Horse, Account) {
     io.on('connection', function(socket){
         console.log('new user connected');
         socket.on('user connected', function(nick){
             socket.username = nick;
-            socket.emit('user connected', msgHistory, rooms);
+            socket.emit('user connected');
         });
+        
+        // Horses -------------------------       
         socket.on('add horse', function(data){
             console.log('add horse');
             var playerModel = require('../models/horse.js');
@@ -35,6 +37,25 @@ module.exports = function (io, Horse) {
 
             });
         });
+        
+        
+        // Accounts -------------------------
+        socket.on('get accounts', function () {
+            console.log('get all accounts');
+            Account.find({}).exec(function (err, accounts){
+            socket.emit('get accounts', accounts);
+            });
+        });
+        socket.on('remove account', function (data) {
+            console.log('remove account: ' + data.id);
+            Account.find({ _id: data.id }).remove().exec();
+        });
+        socket.on('update account', function (data){
+            console.log('update account: ' + data.id);
+            Account.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
+            });
+        });
+        
         socket.on('disconnect', function(){
             console.log('user disconnected');
         });

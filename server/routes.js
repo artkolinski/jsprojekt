@@ -3,6 +3,10 @@ module.exports = function (app, passport, Account) {
     app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');
     });
+    
+    app.get('/admin/accounts', function (req, res) {
+        res.render('admin/accounts');
+    });
 
     // Passport ------------------------------------
      app.get('/', function (req, res) {
