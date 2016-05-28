@@ -20,7 +20,7 @@ module.exports = function (app, passport, Account) {
      });
 
     app.post('/register', function(req, res) {
-        Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko}), req.body.password, function(err, account) {
+        Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko, role: req.body.role}), req.body.password, function(err, account) {
             if (err) {
                 return res.render('register', { account : account });
             }

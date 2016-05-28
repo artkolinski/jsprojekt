@@ -3,11 +3,12 @@ var express = require('express');
 var path = require('path');
 var mongoose = require('mongoose'); 
 var app = express();
-var http = require('http').Server(app);
+//var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var serveStatic = require('serve-static');
+var ConnectRoles = require('connect-roles');
 
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
@@ -35,6 +36,23 @@ var Account = require('./models/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
+
+// Role ------------------------------------
+/*var user = new ConnectRoles({
+  failureHandler: function (req, res, action) {
+    // optional function to customise code that runs when
+    // user fails authorisation
+    var accept = req.headers.accept || '';
+    res.status(403);
+    if (~accept.indexOf('html')) {
+      res.render('access-denied', {action: action});
+    } else {
+      res.send('Access Denied - You don\'t have permission to: ' + action);
+    }
+  }
+});
+app.use(user.middleware());*/
+
 
 // Baza ------------------------------------
 mongoose.connect('mongodb://localhost/projekt');

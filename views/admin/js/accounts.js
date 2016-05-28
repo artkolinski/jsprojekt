@@ -23,7 +23,7 @@ var refresh = function(){
        $('#tbody').empty();
         hTable.clear();
         account.forEach(function (account) {
-            var data =[account.username, account.nazwisko, '<button class="modify-' + account._id + '">Edycja</button>','<button class="delete-' + account._id + '">Usuń</button>'];
+            var data =[account.username, account.nazwisko, account.role,'<button class="modify-' + account._id + '">Edycja</button>','<button class="delete-' + account._id + '">Usuń</button>'];
             data.id = account._id;
             hTable.row.add(data).draw();
             $('.modify-'+account._id).click(function(){
