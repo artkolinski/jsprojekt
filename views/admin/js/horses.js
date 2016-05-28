@@ -3,6 +3,10 @@
 var addHorse = document.getElementById('addHorse');
 var socket = io();
 var hTable = $('#horseTab').DataTable({
+    "columnDefs": [ {
+    "targets": [3,4],
+    "orderable": false
+    } ],
     "iDisplayLength": 10,
     "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
     "createdRow" : function( row, data, index ) {
