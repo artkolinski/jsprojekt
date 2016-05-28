@@ -4,7 +4,7 @@
 var socket = io();
 var hTable = $('#accTab').DataTable({
     "columnDefs": [ {
-    "targets": [2,3],
+    "targets": [4,3],
     "orderable": false
     } ],
     "iDisplayLength": 10,
@@ -29,9 +29,14 @@ var refresh = function(){
             $('.modify-'+account._id).click(function(){
                 $('#horse').css("visibility", "hidden");
                 var site = '<div id="editForm">';
-                site += '<table class="table table-bordered table-striped"><tr><th>Username</th><th>Nazwisko</th><th></th><th></th></tr>';
+                site += '<table class="table table-bordered table-striped"><tr><th>Username</th><th>Nazwisko</th><th>Uprawnienia</th><th></th><th></th></tr>';
                 site += '<tr><th><input id="editUsername" value='+account.username+' /></td></th></br>';
                 site += '<th><input id="editNazwisko" value='+account.nazwisko+' /></td></th></br>';
+                if(account.role == "admin"){
+                    site += '<th><select id="editRole"><option value="admin" selected>admin</option><option value="sedzia">sedzia</option></select></th></br>';  
+                }else{
+                    site += '<th><select id="editRole"><option value="admin">admin</option><option value="sedzia" selected>sedzia</option></select></th></br>';   
+                }                
                 site += '<th><button id="editOk">Edytuj</button></th>';
                 site += '<th><button id="editCancel">Anuluj</button></th></tr>';
                 site += '</table></div>';
@@ -46,7 +51,8 @@ var refresh = function(){
                     socket.emit('update account', {
                         id: account._id,
                         username: $('#editUsername').val(),
-                        nazwisko: $('#editNazwisko').val()
+                        nazwisko: $('#editNazwisko').val(),
+                        role: $('#editRole').val()
                     });
                     editForm.remove();
                     $('#horse').css("visibility", "visible");

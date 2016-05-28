@@ -32,7 +32,11 @@ var refresh = function(){
                 var site = '<div id="editForm">';
                 site += '<table class="table table-bordered table-striped"><tr><th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th></tr>';
                 site += '<tr><th><input id="editNazwa" value='+horse.nazwa+' /></td></th></br>';
-                site += '<th><select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td></th></br>';
+                if(horse.plec == "Klacz"){
+                    site += '<th><select id="editPlec"><option value="Klacz" selected>Klacz</option><option value="Koń">Koń</option></select></td></th></br>';
+                }else{
+                    site += '<th><select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń" selected>Koń</option></select></td></th></br>';
+                }              
                 site += '<th><input id="editHodowca" value='+horse.hodowca+' /></td></th></br>';
                 site += '<th><button id="editOk">Edytuj</button></th>';
                 site += '<th><button id="editCancel">Anuluj</button></th></tr>';
