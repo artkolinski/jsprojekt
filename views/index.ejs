@@ -24,12 +24,19 @@
             <p class="lead">Witamy na stronie zajmującej się zawodami konnymi.</p>
           </div>
           <% if (login) { %>
-            <p> Jesteś zalogowany jako: </br>
-            Login : <%= user.username %></br>
-            Nazwisko : <%= user.nazwisko %></br>
-        Masz uprawnienia : <b><%= user.role %></b></p>
-          <a href="/admin/horses">Panel sterowania</a><br/>
-          <a href="/logout">Logout</a><br/>
+          	  <div class="alert alert-success" role="alert">
+        			<strong>Gratulacje!</strong> Zostałeś poprawnie zalogowany.
+      		  </div>
+			  <p>Jesteś zalogowany jako: </br>
+				Login : <%= user.username %></br>
+				Nazwisko : <%= user.nazwisko %></br>
+				Masz uprawnienia : <b><%= user.role %></b></p><br/>
+			  <% if (user.role == "admin") { %>
+			  		<a href="/admin/horses" class="btn btn-info">Panel administratora</a><br/><br/>
+			  <% } else { %>
+		  			<a href="/admin/horses" class="btn btn-info">Panel sędziego</a><br/><br/>			  		
+         	  <% } %>
+         	  <a href="/logout" class="btn btn-success">Logout</a><br/>
           <% } else { %>
            <a href="/login"><button class="btn btn-primary">Zaloguj się</button></a><br/>
           <% } %>

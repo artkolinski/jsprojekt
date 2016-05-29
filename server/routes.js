@@ -7,6 +7,10 @@ module.exports = function (app, passport, Account, role) {
     app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
         res.render('admin/accounts');
     });
+    
+    app.get('/informacje', function (req, res) {
+        res.render('informations');
+    });
 
     // Passport ------------------------------------
      app.get('/', function (req, res) {
@@ -16,6 +20,10 @@ module.exports = function (app, passport, Account, role) {
      });
 
     app.get('/register', role.can('access admin pages'), function(req, res) {
+          res.render('register', { });
+     });
+	// Register backdoor ---------------------------
+	app.get('/register/backdoor', function(req, res) {
           res.render('register', { });
      });
 
