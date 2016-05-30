@@ -20,6 +20,7 @@
     "passport-http": "^0.2.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
-    "connect-roles": "*"
+    "connect-roles": "*",
+	"serve-favicon": "*"
   }
 }

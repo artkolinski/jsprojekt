@@ -17,6 +17,7 @@ role.use('access judge pages', function (req) {
 });
 
 role.use(function (req) {
+  console.log('access admin pages');
   if (req.user.role === 'admin') {
     return true;
   }

@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+    <title>Tworzenie zawodów</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+</head>
+<body>
+   <div id="wrapper">
+      <% include sidebar %>
+      <div id="page-content-wrapper">
+              <div id="horseContainer">
+                   <div id="editHorse">
+                    </div>
+                   <div id="horse">
+                      <div class="page-content inset">
+                        <div class="col-md-12">
+                        <p class="lead">Tworzenie zawodów</p>
+                      </div>
+                       <table  class="table table-bordered table-striped">
+                                <tr>
+                                    <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th>
+                                </tr>
+                                <tr>
+                                   <td><input id="nazwa"/></td>
+                                   <td><select id="plec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td>
+                                   <td><input id="hodowca"/></td>
+                                   <td><button id="addHorse">Dodaj</button></td>
+                                </tr>
+                        </table>
+                        <table id="horseTab" class="display" cellspacing="0" width="100%">
+                           <thead>
+                                <tr>
+                                    <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th>
+                                </tr>                    
+                           </thead>
+                           <tfoot id="tbody">
+
+                           </tfoot>
+                        </table>
+                    </div>  
+                    <script src="js/jquery-1.12.3.min.js"></script> 
+                    <script src="js/jquery.dataTables.min.js"></script>
+                    <script src="js/socket.io.js"></script>
+                    <script src="js/horses.js"></script>     
+               </div>
+          </div>
+       </div>  
+    </div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 /*jshint node: true */
 var express = require('express');
+var favicon = require('serve-favicon');
 var path = require('path');
 var mongoose = require('mongoose'); 
 var app = express();
@@ -9,6 +10,7 @@ var expressSession = require('express-session');
 var serveStatic = require('serve-static');
 var ConnectRoles = require('connect-roles');
 
+app.use(favicon('views/images/favicon.ico'));
 app.use(serveStatic("views"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -39,8 +41,6 @@ passport.deserializeUser(Account.deserializeUser());
 // Role ------------------------------------
 var role = new ConnectRoles({
   failureHandler: function (req, res, action) {
-    // optional function to customise code that runs when
-    // user fails authorisation
     var accept = req.headers.accept || '';
     res.status(403);
     if (~accept.indexOf('html')) {
