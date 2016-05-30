@@ -14,6 +14,7 @@ module.exports = function (io, Horse, Account) {
                 var player = new playerModel({
                     nazwa: data.nazwa,
                     plec: data.plec,
+					dataur: data.dataur,
                     hodowca: data.hodowca
                 });
                 player.save(function (err, item) {
@@ -34,7 +35,6 @@ module.exports = function (io, Horse, Account) {
         socket.on('update horse', function (data){
             console.log('update horse: ' + data.id);
             Horse.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
-
             });
         });
         

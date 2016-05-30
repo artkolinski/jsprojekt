@@ -4,7 +4,7 @@ var addHorse = document.getElementById('addHorse');
 var socket = io();
 var hTable = $('#horseTab').DataTable({
     "columnDefs": [ {
-    "targets": [3,4],
+    "targets": [5,4],
     "orderable": false
     } ],
     "iDisplayLength": 10,
@@ -23,20 +23,21 @@ var refresh = function(){
        $('#tbody').empty();
         hTable.clear();
         horses.forEach(function (horse) {
-            var data =[horse.nazwa,horse.plec, horse.hodowca,'<button class="modify-' + horse._id + '">Edycja</button>','<button class="delete-' + horse._id + '">Usuń</button>'];
+            var data =[ horse.nazwa, horse.plec, horse.dataur, horse.hodowca,'<button class="modify-' + horse._id + '">Edycja</button>','<button class="delete-' + horse._id + '">Usuń</button>'];
             data.id = horse._id;
             hTable.row.add(data).draw();
             $('.modify-'+horse._id).click(function(){
                 $('#horse').css("visibility", "hidden");
                 
                 var site = '<div id="editForm">';
-                site += '<table class="table table-bordered table-striped"><tr><th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th></tr>';
+                site += '<table class="table table-bordered table-striped"><tr><th>Nazwa</th><th>Płeć</th><th>Data urodzin</th><th>Hodowca</th><th></th><th></th></tr>';
                 site += '<tr><th><input id="editNazwa" value='+horse.nazwa+' /></td></th></br>';
                 if(horse.plec == "Klacz"){
                     site += '<th><select id="editPlec"><option value="Klacz" selected>Klacz</option><option value="Koń">Koń</option></select></td></th></br>';
                 }else{
                     site += '<th><select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń" selected>Koń</option></select></td></th></br>';
-                }              
+                }
+				site += '<td><input type="date" id="editDataur" value='+horse.dataur+' /></td>';
                 site += '<th><input id="editHodowca" value='+horse.hodowca+' /></td></th></br>';
                 site += '<th><button id="editOk">Edytuj</button></th>';
                 site += '<th><button id="editCancel">Anuluj</button></th></tr>';
@@ -53,6 +54,7 @@ var refresh = function(){
                         id: horse._id,
                         nazwa: $('#editNazwa').val(),
                         plec: $('#editPlec').val(),
+						dataur: $('#editDataur').val(),
                         hodowca: $('#editHodowca').val()
                     });
                     editForm.remove();
@@ -82,11 +84,13 @@ window.onload = function() {
 addHorse.addEventListener('click', function(){
     var nazwa = $('#nazwa').val();
     var plec = $('#plec').val();
+	var dataur = $('#dataur').val();
     var hodowca = $('#hodowca').val();
     socket.emit('add horse',
         {
             nazwa: nazwa,
             plec: plec,
+			dataur: dataur,
             hodowca: hodowca
         }
     );
