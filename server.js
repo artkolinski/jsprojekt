@@ -25,8 +25,18 @@ app.use(expressSession({
 }));
 app.set('port', process.env.PORT || 3000);
 var configDB = require('./server/database');
-var Horse = require('./models/horse');
+
+// Modele ------------------------------------
 var Account = require('./models/account');
+var Element = require('./models/element.listy.startowej');
+var Grupa = require('./models/grupa');
+var GrupaElement = require('./models/grupa_element.listy.startowej');
+var Horse = require('./models/horse');
+var Ocena = require('./models/ocena');
+var OcenaSedziego = require('./models/ocena_sedziego');
+var SedziaGrupa = require('./models/sedzia_grupa');
+var Zawody = require('./models/zawody');
+var ZawodyGrupa = require('./models/zawody_grupa');
 
 // Konfiguracja Logowania ------------------------------------
 var passport = require('passport');
@@ -77,7 +87,7 @@ ssl.listen(443, function () {
 
 // Sockety ------------------------------------
 var io = require('socket.io')(ssl);
-require('./server/sockets.js')(io, Horse, Account);
+require('./server/sockets.js')(io, Horse, Account, Element, Grupa, GrupaElement, Ocena, OcenaSedziego, SedziaGrupa, Zawody, ZawodyGrupa);
 
 /* HTTP ------------------------------------
 http.listen(3000, function(){

@@ -1,5 +1,5 @@
 /*jshint node: true */
-module.exports = function (io, Horse, Account) {
+module.exports = function (io, Horse, Account, Element, Grupa, GrupaElement, Ocena, OcenaSedziego, SedziaGrupa, Zawody, ZawodyGrupa) {
     io.on('connection', function(socket){
         /*console.log('new user connected');
         socket.on('user connected', function(nick){
@@ -36,8 +36,7 @@ module.exports = function (io, Horse, Account) {
             console.log('update horse: ' + data.id);
             Horse.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
             });
-        });
-        
+        });  
         
         // Accounts -------------------------
         socket.on('get accounts', function () {
