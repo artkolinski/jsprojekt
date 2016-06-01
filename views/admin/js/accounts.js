@@ -3,10 +3,10 @@
 var socket = io();
 var hTable = $('#accTab').DataTable({
     "columnDefs": [ {
-    "targets": [4,3],
+    "targets": [4,5],
     "orderable": false
     } ],
-    "iDisplayLength": 10,
+    "iDisplayLength": -1,
     "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
     "createdRow" : function( row, data, index ) {
         if( data.hasOwnProperty("id") ) {
@@ -22,15 +22,16 @@ var refresh = function(){
        $('#tbody').empty();
         hTable.clear();
         account.forEach(function (account) {
-            var data =[account.username, account.nazwisko, account.role,'<button class="modify-' + account._id + '">Edycja</button>','<button class="delete-' + account._id + '">Usuń</button>'];
+            var data =[account.username, account.imie, account.nazwisko, account.role,'<button class="modify-' + account._id + '">Edycja</button>','<button class="delete-' + account._id + '">Usuń</button>'];
             data.id = account._id;
             hTable.row.add(data).draw();
             $('.modify-'+account._id).click(function(){
                 $('#horse').css("visibility", "hidden");
                 var site = '<div id="editForm">';
-                site += '<table class="table table-bordered table-striped"><tr><th>Username</th><th>Nazwisko</th><th>Uprawnienia</th><th></th><th></th></tr>';
+                site += '<table class="table table-bordered table-striped"><tr><th>Username</th><th>Imie</th><th>Nazwisko</th><th>Uprawnienia</th><th></th><th></th></tr>';
                 site += '<tr><th><input id="editUsername" value='+account.username+' /></td></th></br>';
-                site += '<th><input id="editNazwisko" value='+account.nazwisko+' /></td></th></br>';
+				site += '<th><input id="editImie" value="'+account.imie+'" /></td></th></br>';
+                site += '<th><input id="editNazwisko" value="'+account.nazwisko+'" /></td></th></br>';
                 if(account.role == "admin"){
                     site += '<th><select id="editRole"><option value="admin" selected>admin</option><option value="sedzia">sedzia</option></select></th></br>';  
                 }else{
@@ -50,6 +51,7 @@ var refresh = function(){
                     socket.emit('update account', {
                         id: account._id,
                         username: $('#editUsername').val(),
+						imie: $('#editImie').val(),
                         nazwisko: $('#editNazwisko').val(),
                         role: $('#editRole').val()
                     });

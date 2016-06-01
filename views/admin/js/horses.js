@@ -7,7 +7,7 @@ var hTable = $('#horseTab').DataTable({
     "targets": [5,4],
     "orderable": false
     } ],
-    "iDisplayLength": 10,
+    "iDisplayLength": -1,
     "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
     "createdRow" : function( row, data, index ) {
         if( data.hasOwnProperty("id") ) {

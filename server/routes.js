@@ -7,6 +7,10 @@ module.exports = function (app, passport, Account, role) {
     app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
         res.render('admin/accounts');
     });
+	
+	app.get('/admin/createCompetition', role.can('access admin pages'), function (req, res) {
+        res.render('admin/createCompetition');
+    });
     
     app.get('/informacje', function (req, res) {
         res.render('informations');
@@ -28,13 +32,14 @@ module.exports = function (app, passport, Account, role) {
      });
 
     app.post('/register', function(req, res) {
-        Account.register(new Account({username : req.body.username, nazwisko: req.body.nazwisko, role: req.body.role}), req.body.password, function(err, account) {
+        Account.register(new Account({username : req.body.username, imie: req.body.imie, nazwisko: req.body.nazwisko, role: req.body.role}), req.body.password, function(err, account) {
             if (err) {
                 return res.render('register', { account : account });
             }
-            passport.authenticate('local')(req, res, function () {
-              res.redirect('/');
-            });
+			res.redirect('/admin/accounts');
+            //passport.authenticate('local')(req, res, function () {
+            //  res.redirect('/');
+            //});
         });
      });
 
