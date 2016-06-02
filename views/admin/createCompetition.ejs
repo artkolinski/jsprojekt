@@ -34,16 +34,16 @@
                   		<p class="lead">Dodanie grupy</p>
                    		<table  class="table table-bordered table-striped">
                                 <tr>
-                                    <th>Nazwa zawodów</th><th>Punktacja</th><th>Ilość sędziów</th><th></th><th></th>
+                                    <th>Nazwa grupy</th><th>Wybrana płeć</th><th></th><th></th>
                                 </tr>
                                 <tr>
-                                   <td><input id="editNazwaZawodow"/></td>
-                                   <td><select id="editOcena"><option value="10">0..10</option><option value="20">0..20</option><option value="105">0..10 + 0.5</option><option value="205">0..20 + 0.5</option></select></td>
-                                   <td><input id="a"/></td>
-                                   <td><button id="as">Edytuj</button></td>
+                                   <td><input id="nazwaGrupy"/></td>
+                                   <td><select id="plecGrupy"><option value="Koń">Konie</option><option value="Klacz">Klacze</option></select></td>
+                                   <td><button id="addGroupButt">Edytuj</button></td>
                                    <td><button id="cancelAddGroup">Anuluj</button></td>
                                 </tr>
                         </table>
+                        
                    </div>
                    <div id="home">
                      <button id="listAddCompetition">Dodaj Zawody</button>
@@ -57,7 +57,7 @@
                                     <th>Nazwa</th><th>Punktacja</th><th>Sędziowie</th><th>Start</th><th>Stop</th><th>Usun</th><th>Grupy</th><th>Dodaj Grupe</th>
                                 </tr>                    
                            </thead>
-                           <tfoot id="compbody">
+                           <tfoot>
 
                            </tfoot>
                         </table>

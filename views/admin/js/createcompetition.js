@@ -2,21 +2,24 @@
 /* global io: false */
 var socket = io();
 
+// Dodawanie zawodów
+var addCompetition = document.getElementById('addCompetition'); //Okno
 var addCompetitionButt = document.getElementById('addCompetitionButt');
-var addCompetition = document.getElementById('addCompetition');
 var cancelAddCompetition = document.getElementById('cancelAddCompetition');
 
 // Grupy
-var addGroup = document.getElementById('addGroup');
+var addGroup = document.getElementById('addGroup'); //Okno
+var addGroupButt = document.getElementById('addGroupButt');
 var cancelAddGroup = document.getElementById('cancelAddGroup');
 
 // Błędy
+var error = document.getElementById('error'); //Okno
 var errorMessage = document.getElementById('errorMessage');
-var error = document.getElementById('error');
+
 
 // Home
 var listAddCompetition = document.getElementById('listAddCompetition');
-var home = document.getElementById('home');
+var home = document.getElementById('home'); //Okno
 var cTable = $('#compTable').DataTable({
     "columnDefs": [ {
     "targets": [3,4,5,6,7],
@@ -56,7 +59,7 @@ addCompetitionButt.addEventListener('click', function(){
 			);
 			liczbasedziow = "";
 			hideAllShowHome();
-			refresh();
+			refreshComp();
 		}else{
 			error.style.display = 'block';
 			errorMessage.innerHTML = "Jest tylko " + number + " sedziow.";
@@ -72,12 +75,12 @@ listAddCompetition.addEventListener('click', function(){
 var addGroupFunc = function(idCompetition){
 	hideAll();
 	addGroup.style.display = 'block';
+	// TODO obsługa tworzenia grupy, dodanie listy z koniami do wyboru
 };
 
-var refresh = function(){
+var refreshComp = function(){
 	socket.emit('get competitions');
 	socket.on('get competitions', function (list) {
-		$('#compbody').empty();
 		cTable.clear();
 		list.forEach(function (list) {
             var data =[ list.nazwa, list.ocena, list.liczbasedziow,' ',' ','<button class="delete-' + list._id + '">Usuń</button>','<button class="groups-' + list._id + '">Grupy</button>','<button class="addgroup-' + list._id + '">Dodaj Grupe</button>'];
@@ -86,7 +89,7 @@ var refresh = function(){
 			$('.delete-'+list._id).click(function(){
                 console.log('remove competition: ' + list._id);
                 socket.emit('remove competition', { id: list._id });
-                refresh();
+                refreshComp();
             });
 			$('.addgroup-'+list._id).click(function(){
                 addGroupFunc(list._id);
@@ -111,7 +114,7 @@ var hideAllShowHome = function(){
 
 window.onload = function() {
 	hideAllShowHome();
-	refresh();
+	refreshComp();
 			//element.style.display = 'none';          
 			//element.style.display = 'block'; 
    
