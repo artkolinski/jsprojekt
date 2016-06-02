@@ -2,24 +2,25 @@
 /* global io: false */
 var socket = io();
 
-// Dodawanie zawodów
-var addCompetition = document.getElementById('addCompetition'); //Okno
+// Dodawanie zawodów -----------------------------------------------------------------
+var addCompetition = document.getElementById('addCompetitionWindow');
 var addCompetitionButt = document.getElementById('addCompetitionButt');
 var cancelAddCompetition = document.getElementById('cancelAddCompetition');
 
-// Grupy
-var addGroup = document.getElementById('addGroup'); //Okno
+// Grupy -----------------------------------------------------------------
+var addGroup = document.getElementById('addGroupWindow');
 var addGroupButt = document.getElementById('addGroupButt');
 var cancelAddGroup = document.getElementById('cancelAddGroup');
+var horseLeftSelect = document.getElementById('horseLeftSelectList');
 
-// Błędy
-var error = document.getElementById('error'); //Okno
+// Błędy -----------------------------------------------------------------
+var error = document.getElementById('errorWindow');
 var errorMessage = document.getElementById('errorMessage');
 
 
-// Home
+// Home -----------------------------------------------------------------
 var listAddCompetition = document.getElementById('listAddCompetition');
-var home = document.getElementById('home'); //Okno
+var home = document.getElementById('homeWindow');
 var cTable = $('#compTable').DataTable({
     "columnDefs": [ {
     "targets": [3,4,5,6,7],
@@ -34,11 +35,37 @@ var cTable = $('#compTable').DataTable({
     }
 });
 
-cancelAddCompetition.addEventListener('click', function(){
+// Dodawanie Grupy -----------------------------------------------------------------
+cancelAddGroup.addEventListener('click', function(){
 	hideAllShowHome();	
 });
 
-cancelAddGroup.addEventListener('click', function(){
+addGroupButt.addEventListener('click', function(){
+	//TODO przycisk dodający grupe
+});
+
+var addGroupFunc = function(idCompetition){
+	hideAll();
+	addGroup.style.display = 'block';	
+	var horsesLeft = [];
+	socket.emit('get horses');
+    socket.on('get horses', function (horses) {		
+        horses.forEach(function (horse) {
+            var oneHorse = {id:horse._id, nazwa:horse.nazwa, hodowca:horse.hodowca};
+            horsesLeft.push(oneHorse);
+        });
+		var horseAvailableList = "";
+		horsesLeft.forEach(function(horse){
+			horseAvailableList += '<option id="' + horse.id + '" nazwa="' + horse.nazwa + '" hodowca="' + horse.hodowca + '" >' + 'Nazwa: ' + horse.nazwa + '  Hodowca: ' + horse.hodowca + '</option>';
+		});
+		horseLeftSelect.innerHTML = horseAvailableList;
+	});
+	// TODO obsługa tworzenia grupy, dodanie listy z koniami do wyboru
+	// obsługa listy startowej
+};
+
+// Dodawanie Zawodów -----------------------------------------------------------------
+cancelAddCompetition.addEventListener('click', function(){
 	hideAllShowHome();	
 });
 
@@ -72,12 +99,6 @@ listAddCompetition.addEventListener('click', function(){
 	home.style.display = 'none';
 });
 
-var addGroupFunc = function(idCompetition){
-	hideAll();
-	addGroup.style.display = 'block';
-	// TODO obsługa tworzenia grupy, dodanie listy z koniami do wyboru
-};
-
 var refreshComp = function(){
 	socket.emit('get competitions');
 	socket.on('get competitions', function (list) {
@@ -98,8 +119,7 @@ var refreshComp = function(){
 	});
 };
 
-
-
+// Ukrywanie i ładowanie okien -----------------------------------------------------------------
 var hideAll = function(){
 	error.style.display = 'none';
 	addCompetition.style.display = 'none';
@@ -115,10 +135,8 @@ var hideAllShowHome = function(){
 window.onload = function() {
 	hideAllShowHome();
 	refreshComp();
-			//element.style.display = 'none';          
-			//element.style.display = 'block'; 
-   
-};			  
+};	
+
 /*
 var refresh = function(){
     console.log('get horses');

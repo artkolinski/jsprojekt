@@ -58,6 +58,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             Horse.find({}).exec(function (err, players){
             socket.emit('get horses', players);
             });
+			console.log('get horses');
         });
         socket.on('remove horse', function (data) {
             console.log('remove horse: ' + data.id);

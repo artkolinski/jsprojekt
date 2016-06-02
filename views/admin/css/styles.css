@@ -28,6 +28,11 @@ body {
 #competitionContainer {
   width: 600px;
 }
+#horsesLeftTable {
+  width: 300px;
+  height: 350px;
+  float: left;
+}
 .paging-nav {
   justify-content: center;
   align-items: center;

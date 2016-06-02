@@ -11,11 +11,11 @@
       <% include sidebar %>
       <div id="page-content-wrapper">
               <div id="competitionContainer">
-                   <div id="error">
+                   <div id="errorWindow">
                    		<p class="lead">Błąd</p>
 					   <h3 id=errorMessage>dfg</h3></br>
                    </div>
-                   <div id="addCompetition">
+                   <div id="addCompetitionWindow">
                   		<p class="lead">Tworzenie zawodów</p>
                    		<table  class="table table-bordered table-striped">
                                 <tr>
@@ -30,8 +30,8 @@
                                 </tr>
                         </table>
                    </div>
-                   <div id="addGroup">
-                  		<p class="lead">Dodanie grupy</p>
+                   <div id="addGroupWindow">
+                  		<p class="lead">Dodawanie grupy</p>
                    		<table  class="table table-bordered table-striped">
                                 <tr>
                                     <th>Nazwa grupy</th><th>Wybrana płeć</th><th></th><th></th>
@@ -43,9 +43,14 @@
                                    <td><button id="cancelAddGroup">Anuluj</button></td>
                                 </tr>
                         </table>
-                        
+                        <div id="horsesLeftTable" class="horsesLeftTable">                      
+					    	<select id="horseLeftSelectList" size="20">
+					   			
+							</select>
+                        </div>
+                        <!-- horsesToTakeDiv, horsesInCompetitionDiv, left - right -->
                    </div>
-                   <div id="home">
+                   <div id="homeWindow">
                      <button id="listAddCompetition">Dodaj Zawody</button>
                       <div class="page-content inset">
                         <div class="col-md-12">
