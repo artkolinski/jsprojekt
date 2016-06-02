@@ -1,15 +1,18 @@
 /*jshint node: true */
 module.exports = function (app, passport, Account, role) { 
-    app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
+	//app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
+    app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');
     });
-    
-    app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
+	
+    //app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
+    app.get('/admin/accounts', function (req, res) {
         res.render('admin/accounts');
     });
 	
-	app.get('/admin/createCompetition', role.can('access admin pages'), function (req, res) {
-        res.render('admin/createCompetition');
+	//app.get('/admin/createcompetition', role.can('access admin pages'), function (req, res) {
+	app.get('/admin/createcompetition', function (req, res) {
+        res.render('admin/createcompetition');
     });
     
     app.get('/informacje', function (req, res) {
@@ -37,9 +40,6 @@ module.exports = function (app, passport, Account, role) {
                 return res.render('register', { account : account });
             }
 			res.redirect('/admin/accounts');
-            //passport.authenticate('local')(req, res, function () {
-            //  res.redirect('/');
-            //});
         });
      });
 

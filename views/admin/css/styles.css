@@ -25,6 +25,11 @@ body {
   align-items: center;
   align-self: center;
 }
+#competitionContainer {
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .paging-nav {
   justify-content: center;
   align-items: center;

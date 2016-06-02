@@ -10,32 +10,54 @@
    <div id="wrapper">
       <% include sidebar %>
       <div id="page-content-wrapper">
-              <div id="horseContainer">
-                   <div id="editHorse">
-                    </div>
-                   <div id="horse">
-                      <div class="page-content inset">
-                        <div class="col-md-12">
-                        <p class="lead">Tworzenie zawodów</p>
-                      </div>
-                       <table  class="table table-bordered table-striped">
+              <div id="competitionContainer">
+                   <div id="error">
+                   		<p class="lead">Błąd</p>
+					   <h3 id=errorMessage>dfg</h3></br>
+                   </div>
+                   <div id="addCompetition">
+                  		<p class="lead">Tworzenie zawodów</p>
+                   		<table  class="table table-bordered table-striped">
                                 <tr>
-                                    <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th>
+                                    <th>Nazwa zawodów</th><th>Punktacja</th><th>Ilość sędziów</th><th></th><th></th>
                                 </tr>
                                 <tr>
-                                   <td><input id="nazwa"/></td>
-                                   <td><select id="plec"><option value="Klacz">Klacz</option><option value="Koń">Koń</option></select></td>
-                                   <td><input id="hodowca"/></td>
-                                   <td><button id="addHorse">Dodaj</button></td>
+                                   <td><input id="nazwaZawodow"/></td>
+                                   <td><select id="ocena"><option value="10">0..10</option><option value="20">0..20</option><option value="105">0..10 + 0.5</option><option value="205">0..20 + 0.5</option></select></td>
+                                   <td><input id="liczbaSedziow"/></td>
+                                   <td><button id="addCompetitionButt">Dodaj</button></td>
+                                   <td><button id="cancelAddCompetition">Anuluj</button></td>
                                 </tr>
                         </table>
-                        <table id="horseTab" class="display" cellspacing="0" width="100%">
+                   </div>
+                   <div id="editCompetition">
+                  		<p class="lead">Edycja zawodów</p>
+                   		<table  class="table table-bordered table-striped">
+                                <tr>
+                                    <th>Nazwa zawodów</th><th>Punktacja</th><th>Ilość sędziów</th><th></th><th></th>
+                                </tr>
+                                <tr>
+                                   <td><input id="editNazwaZawodow"/></td>
+                                   <td><select id="editOcena"><option value="10">0..10</option><option value="20">0..20</option><option value="105">0..10 + 0.5</option><option value="205">0..20 + 0.5</option></select></td>
+                                   <td><input id="editLiczbaSedziow"/></td>
+                                   <td><button id="editCompetitionButt">Edytuj</button></td>
+                                   <td><button id="cancelEditCompetition">Anuluj</button></td>
+                                </tr>
+                        </table>
+                   </div>
+                   <div id="home">
+                     <button id="listAddCompetition">Dodaj Zawody</button>
+                      <div class="page-content inset">
+                        <div class="col-md-12">
+                        <p class="lead">Zawody</p>
+						  </div>
+                        <table id="compTable" class="display" cellspacing="0" width="100%">
                            <thead>
                                 <tr>
-                                    <th>Nazwa</th><th>Płeć</th><th>Hodowca</th><th></th><th></th>
+                                    <th>Nazwa</th><th>Punktacja</th><th>Sędziowie</th><th>Start</th><th>Stop</th><th>Usun</th><th>Grupy</th><th>Dodaj Grupe</th>
                                 </tr>                    
                            </thead>
-                           <tfoot id="tbody">
+                           <tfoot id="compbody">
 
                            </tfoot>
                         </table>
@@ -43,7 +65,7 @@
                     <script src="js/jquery-1.12.3.min.js"></script> 
                     <script src="js/jquery.dataTables.min.js"></script>
                     <script src="js/socket.io.js"></script>
-                    <script src="js/horses.js"></script>     
+                    <script src="js/createcompetition.js"></script>     
                </div>
           </div>
        </div>  
