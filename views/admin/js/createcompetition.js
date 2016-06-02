@@ -1,11 +1,21 @@
 /* jshint browser: true, devel: true, jquery: true, esnext: true, node: true   */
 /* global io: false */
 var socket = io();
+
 var addCompetitionButt = document.getElementById('addCompetitionButt');
 var addCompetition = document.getElementById('addCompetition');
-var listAddCompetition = document.getElementById('listAddCompetition');
+var cancelAddCompetition = document.getElementById('cancelAddCompetition');
+
+// Grupy
+var addGroup = document.getElementById('addGroup');
+var cancelAddGroup = document.getElementById('cancelAddGroup');
+
+// Błędy
 var errorMessage = document.getElementById('errorMessage');
 var error = document.getElementById('error');
+
+// Home
+var listAddCompetition = document.getElementById('listAddCompetition');
 var home = document.getElementById('home');
 var cTable = $('#compTable').DataTable({
     "columnDefs": [ {
@@ -19,6 +29,14 @@ var cTable = $('#compTable').DataTable({
             row.id = data.id;
         }       
     }
+});
+
+cancelAddCompetition.addEventListener('click', function(){
+	hideAllShowHome();	
+});
+
+cancelAddGroup.addEventListener('click', function(){
+	hideAllShowHome();	
 });
 
 addCompetitionButt.addEventListener('click', function(){
@@ -37,9 +55,7 @@ addCompetitionButt.addEventListener('click', function(){
 				}
 			);
 			liczbasedziow = "";
-			error.style.display = 'none';
-			addCompetition.style.display = 'none';
-			home.style.display = 'block';
+			hideAllShowHome();
 			refresh();
 		}else{
 			error.style.display = 'block';
@@ -53,7 +69,10 @@ listAddCompetition.addEventListener('click', function(){
 	home.style.display = 'none';
 });
 
-
+var addGroupFunc = function(idCompetition){
+	hideAll();
+	addGroup.style.display = 'block';
+};
 
 var refresh = function(){
 	socket.emit('get competitions');
@@ -69,16 +88,33 @@ var refresh = function(){
                 socket.emit('remove competition', { id: list._id });
                 refresh();
             });
+			$('.addgroup-'+list._id).click(function(){
+                addGroupFunc(list._id);
+            });
 		});
 	});
 };
-			  
-window.onload = function() {
+
+
+
+var hideAll = function(){
 	error.style.display = 'none';
 	addCompetition.style.display = 'none';
-	//element.style.display = 'none';          
-	//element.style.display = 'block'; 
-    refresh();
+	addGroup.style.display = 'none';
+	home.style.display = 'none';
+};
+
+var hideAllShowHome = function(){
+	hideAll();
+	home.style.display = 'block';
+};
+
+window.onload = function() {
+	hideAllShowHome();
+	refresh();
+			//element.style.display = 'none';          
+			//element.style.display = 'block'; 
+   
 };			  
 /*
 var refresh = function(){

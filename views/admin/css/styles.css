@@ -27,8 +27,6 @@ body {
 }
 #competitionContainer {
   width: 600px;
-  margin-left: auto;
-  margin-right: auto;
 }
 .paging-nav {
   justify-content: center;
