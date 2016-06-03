@@ -14,11 +14,18 @@ var horseLeftSelect = document.getElementById('horseLeftSelectList');
 var horseRightSelect = document.getElementById('horseRightSelectList');
 var fromLeftToRight = document.getElementById('fromLeftToRight');
 var fromRightToLeft = document.getElementById('fromRightToLeft');
+	
+	// Wyświetlanie grup
+var showGroupsWindow = document.getElementById('showGroupsWindow');
+var showGroupsClose = document.getElementById('showGroupsClose');
+var showGroupsTable = $('#showGroupsTable').DataTable({
+    "iDisplayLength": -1,
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+});
 
 // Błędy -----------------------------------------------------------------
 var error = document.getElementById('errorWindow');
 var errorMessage = document.getElementById('errorMessage');
-
 
 // Home -----------------------------------------------------------------
 var listAddCompetition = document.getElementById('listAddCompetition');
@@ -37,7 +44,41 @@ var cTable = $('#compTable').DataTable({
     }
 });
 
+// Wyświetlanie Grup -----------------------------------------------------------------
+showGroupsClose.addEventListener('click', function(){
+	hideAllShowHome();
+});
+
+var showGroupsFunc = function(idCompetitions, nameComp){
+	hideAll();
+	showGroupsWindow.style.display = 'block';
+	console.log('idZaw: ' + idCompetitions + ' nazwaZaw: ' + nameComp);
+	var data = {idCompetitions:idCompetitions, nameComp:nameComp};
+	socket.emit('get groups',data);
+	socket.on('downloaded groups', function (list) {
+		showGroupsTable.clear();
+		list.forEach(function (list) {
+            var data =[ list.nazwa ];
+            showGroupsTable.row.add(data).draw();
+			/*$('.delete-'+list._id).click(function(){
+                console.log('remove competition: ' + list._id);
+                socket.emit('remove competition', { id: list._id });
+                refreshComp();
+            });
+			$('.addgroup-'+list._id).click(function(){
+				compName = list.nazwa;
+                addGroupFunc(list._id);
+            });
+			$('.groups-'+list._id).click(function(){
+                showGroupsFunc(list._id);
+            });*/
+		});
+	});
+	
+};
+
 // Dodawanie Grupy -----------------------------------------------------------------
+var compName = "";
 var horsesLeft = [];
 var horsesRight = [];
 var numerStartowy = 1;
@@ -52,19 +93,24 @@ addGroupButt.addEventListener('click', function(){
     var plecGrupy = $('#plecGrupy').val();
 	socket.emit('add group',
 	{
-			nazwa: nazwaGrupy,
-            plec: plecGrupy
+		nazwa: nazwaGrupy,
+        plec: plecGrupy
 	});	
 	socket.on('horseList id', function (horseListId) {
-				//error.style.display = 'block';
-				//errorMessage.innerHTML = "id " + horseListId;
-				socket.emit('add horseElem to group',
-				{
-					groupName: nazwaGrupy,
-					horseElemId: horseListId
-				});			
+		//error.style.display = 'block';
+		//errorMessage.innerHTML = "id " + horseListId;
+		socket.emit('add horseElem to group',
+		{
+			groupName: nazwaGrupy,
+			horseElemId: horseListId
+		});			
 	});
 	socket.on('group id', function (groupId) {
+		socket.emit('add group to comp',  // << ------------ to do przetestowania
+			{
+				groupId: groupId,
+				compName: compName
+			});			
 		horsesRight.forEach(function(horse){
 			socket.emit('add horse to list',
 			{
@@ -74,8 +120,7 @@ addGroupButt.addEventListener('click', function(){
 			});			
 		});		
 	});
-	//horsesRight = [];
-	//hideAllShowHome();	
+	hideAllShowHome();	
 });
 
 
@@ -195,7 +240,11 @@ var refreshComp = function(){
                 refreshComp();
             });
 			$('.addgroup-'+list._id).click(function(){
+				compName = list.nazwa;
                 addGroupFunc(list._id);
+            });
+			$('.groups-'+list._id).click(function(){
+                showGroupsFunc(list._id, list.nazwa);
             });
 		});
 	});
@@ -207,6 +256,7 @@ var hideAll = function(){
 	addCompetition.style.display = 'none';
 	addGroup.style.display = 'none';
 	home.style.display = 'none';
+	showGroupsWindow.style.display = 'none';
 };
 
 var hideAllShowHome = function(){
