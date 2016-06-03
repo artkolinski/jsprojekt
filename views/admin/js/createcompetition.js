@@ -78,7 +78,7 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 };
 
 // Dodawanie Grupy -----------------------------------------------------------------
-var compName = "";
+var compId = "";
 var horsesLeft = [];
 var horsesRight = [];
 var numerStartowy = 1;
@@ -109,7 +109,7 @@ addGroupButt.addEventListener('click', function(){
 		socket.emit('add group to comp',  // << ------------ to do przetestowania
 			{
 				groupId: groupId,
-				compName: compName
+				compId: compId
 			});			
 		horsesRight.forEach(function(horse){
 			socket.emit('add horse to list',
@@ -240,7 +240,7 @@ var refreshComp = function(){
                 refreshComp();
             });
 			$('.addgroup-'+list._id).click(function(){
-				compName = list.nazwa;
+				compId = list._id;
                 addGroupFunc(list._id);
             });
 			$('.groups-'+list._id).click(function(){

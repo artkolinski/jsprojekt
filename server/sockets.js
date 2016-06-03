@@ -94,14 +94,26 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
                     console.log(item);
                 });	
         });	
-		socket.on('add group to comp', function(data){	// Złączenie	// << ------------ to do przetestowania
-			var groupsTable = [];
-			Zawody.find({nazwa: data.compName}).exec(function (err, zawody){
-			groupsTable = zawody.grupy;
-			console.log('Groups Table before',groupsTable);
-			groupsTable.push(data.groupId);
-			});
-			Zawody.update({nazwa: data.compName}, {grupy:groupsTable});
+		socket.on('add group to comp', function(data){	// Złączenie
+				Grupa.find({_id: data.groupId}).exec(function (err, grupa){
+						Grupa.create(grupa, function (err, grupa2) {
+						  if (err) console.log(err);
+							
+						  	// Find the `user` that owns the category.
+							Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
+							  if (err) console.log(err);
+							  zawody.grupy.push(grupa2);	
+							  //console.log('Groups Table after ' + grupa);
+							 // console.log('Groupa2 Table after ' + grupa2);
+							  //console.log('zaw Table after ' + zawody);
+							  zawody.save(function (err, item) {
+									console.dir(err);
+									console.log(item);
+							  });
+							});
+						});
+						
+				});
         });	
 		
 		
