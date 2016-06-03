@@ -20,6 +20,20 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
                     console.dir(err);
                     console.log(item);
                 });
+        });
+		socket.on('add group', function(data){
+            var model = Grupa;
+                var obj = new model({
+                    nazwa: data.nazwa,
+                    plec: data.plec,
+                    oceniona: false,
+					aktywna: false
+                });
+				obj.save(function (err, item) {
+                    console.dir(err);
+                    console.log(item);
+                });
+					socket.emit('group id', obj._id);
         });	
 		socket.on('get competitions', function () {
             Zawody.find({}).exec(function (err, list){
@@ -38,6 +52,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			console.log('counted judges: ', count);
             });
         });
+		
+		
 		
         // Horses -------------------------       
         socket.on('add horse', function(data){

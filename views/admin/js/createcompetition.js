@@ -40,13 +40,26 @@ var cTable = $('#compTable').DataTable({
 // Dodawanie Grupy -----------------------------------------------------------------
 var horsesLeft = [];
 var horsesRight = [];
-var numerStartowy = 0;
+var numerStartowy = 1;
+var idCompetitionFromTable;
 cancelAddGroup.addEventListener('click', function(){
 	hideAllShowHome();	
 });
 
 addGroupButt.addEventListener('click', function(){
 	//TODO przycisk dodający grupe
+	var nazwaGrupy = $('#nazwaGrupy').val();
+    var plecGrupy = $('#plecGrupy').val();
+	socket.emit('add group',
+	{
+			nazwa: nazwaGrupy,
+            plec: plecGrupy
+	});	
+	socket.on('group id', function (groupId) {
+		error.style.display = 'block';
+		errorMessage.innerHTML = "id " + groupId;
+	});
+	//hideAllShowHome();
 });
 
 
@@ -56,10 +69,10 @@ fromLeftToRight.addEventListener('click', function(){
         var hodowca = $("#horseLeftSelectList option:selected").attr('hodowca');
         if(typeof id != 'undefined') { 
             console.log(nazwa + " ->");
-            $("#horseLeftSelectList option:selected").remove();
-			numerStartowy += 1;
+            $("#horseLeftSelectList option:selected").remove();			
             $('#horseRightSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + 'Nr: ' + numerStartowy +  '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
-            var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
+			numerStartowy += 1;
+            var horse = {id:id, nr:numerStartowy, nazwa:nazwa, hodowca:hodowca};
 			horsesLeft = _.without(horsesLeft, _.findWhere(horsesLeft, {id: id}));
             horsesRight.push(horse);
 			console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
@@ -72,19 +85,26 @@ fromRightToLeft.addEventListener('click', function(){
         var hodowca = $("#horseRightSelectList option:selected").attr('hodowca');
         if(typeof id != 'undefined') { 
             console.log(nazwa + " <-");
-            //$("#horseRightSelectList option:selected").remove();
-			$("#horseRightSelectList").remove();
+			$('#horseRightSelectList').find('option').remove();
+			horsesRight = _.without(horsesRight, _.findWhere(horsesRight, {id: id}));
+			numerStartowy = 1;
+			horsesRight.forEach(function(horse){
+				$('#horseRightSelectList').append('<option id="' + horse.id + '" nazwa="' + horse.nazwa + '" hodowca="' + horse.hodowca + '">' + 'Nr: ' + numerStartowy +  '  Nazwa: ' + horse.nazwa + '  Hodowca: ' + horse.hodowca + '</option>');	
+				horsesRight = _.without(horsesRight, _.findWhere(horsesRight, {id: horse.id}));
+				var horseNumb = {id:horse.id, nr:numerStartowy, nazwa:horse.nazwa, hodowca:horse.hodowca};
+				horsesRight.push(horseNumb);
+				console.log(horseNumb);
+				numerStartowy += 1;
+			});			
             $('#horseLeftSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
             var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
-			numerStartowy -= 1;
-			//TODO Usunięcie z prawej tablicy
-
             horsesLeft.push(horse);
 			console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
 		}  
 });
 
 var addGroupFunc = function(idCompetition){
+	idCompetitionFromTable = idCompetition;
 	hideAll();
 	addGroup.style.display = 'block';	
 	loadAllHorsesToLeftTable();
