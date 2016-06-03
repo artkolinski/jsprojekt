@@ -55,11 +55,27 @@ addGroupButt.addEventListener('click', function(){
 			nazwa: nazwaGrupy,
             plec: plecGrupy
 	});	
-	socket.on('group id', function (groupId) {
-		error.style.display = 'block';
-		errorMessage.innerHTML = "id " + groupId;
+	socket.on('horseList id', function (horseListId) {
+				//error.style.display = 'block';
+				//errorMessage.innerHTML = "id " + horseListId;
+				socket.emit('add horseElem to group',
+				{
+					groupName: nazwaGrupy,
+					horseElemId: horseListId
+				});			
 	});
-	//hideAllShowHome();
+	socket.on('group id', function (groupId) {
+		horsesRight.forEach(function(horse){
+			socket.emit('add horse to list',
+			{
+				numerstartowy: horse.nr,
+                id_horse: horse.id,
+				id_grupa: groupId
+			});			
+		});		
+	});
+	//horsesRight = [];
+	//hideAllShowHome();	
 });
 
 
@@ -71,10 +87,10 @@ fromLeftToRight.addEventListener('click', function(){
             console.log(nazwa + " ->");
             $("#horseLeftSelectList option:selected").remove();			
             $('#horseRightSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + 'Nr: ' + numerStartowy +  '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
-			numerStartowy += 1;
             var horse = {id:id, nr:numerStartowy, nazwa:nazwa, hodowca:hodowca};
 			horsesLeft = _.without(horsesLeft, _.findWhere(horsesLeft, {id: id}));
             horsesRight.push(horse);
+			numerStartowy += 1;
 			console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
 		}  
 });

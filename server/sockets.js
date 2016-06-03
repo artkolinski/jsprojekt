@@ -34,6 +34,31 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
                     console.log(item);
                 });
 					socket.emit('group id', obj._id);
+        });
+		socket.on('add horse to list', function(data){
+            var model = Element;
+                var obj = new model({
+                    numerstartowy: data.numerstartowy,
+                    id_horse: data.id_horse,
+					id_grupa: data.id_grupa
+                });
+				obj.save(function (err, item) {
+                    console.dir(err);
+                    console.log(item);
+                });
+					socket.emit('horseList id', obj._id);
+        });	
+		socket.on('add horseElem to group', function(data){
+			
+			var model = Grupa;
+                var obj = new model({
+                    nazwa: data.groupName,
+                    listastartowa: data.horseElemId
+                });
+				obj.save(function (err, item) {
+                    console.dir(err);
+                    console.log(item);
+                });	
         });	
 		socket.on('get competitions', function () {
             Zawody.find({}).exec(function (err, list){
