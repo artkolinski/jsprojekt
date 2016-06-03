@@ -1,7 +1,6 @@
 /* jshint browser: true, devel: true, jquery: true, esnext: true, node: true   */
 /* global io: false */
 var socket = io();
-
 // Dodawanie zawodów -----------------------------------------------------------------
 var addCompetition = document.getElementById('addCompetitionWindow');
 var addCompetitionButt = document.getElementById('addCompetitionButt');
@@ -41,7 +40,7 @@ var cTable = $('#compTable').DataTable({
 // Dodawanie Grupy -----------------------------------------------------------------
 var horsesLeft = [];
 var horsesRight = [];
-var numerStartowy = 1;
+var numerStartowy = 0;
 cancelAddGroup.addEventListener('click', function(){
 	hideAllShowHome();	
 });
@@ -50,6 +49,7 @@ addGroupButt.addEventListener('click', function(){
 	//TODO przycisk dodający grupe
 });
 
+
 fromLeftToRight.addEventListener('click', function(){
         var id = $("#horseLeftSelectList option:selected").attr('id');
         var nazwa = $("#horseLeftSelectList option:selected").attr('nazwa');
@@ -57,21 +57,31 @@ fromLeftToRight.addEventListener('click', function(){
         if(typeof id != 'undefined') { 
             console.log(nazwa + " ->");
             $("#horseLeftSelectList option:selected").remove();
-            $('#horseRightSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + 'Nr: ' + numerStartowy + '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
-            var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
 			numerStartowy += 1;
-			//TODO Usunięcie z lewej tablicy
-				/*var index = horsesLeft.indexOf(horse[id]);
-				if (index > -1) {
-					horsesLeft.splice(index, 1);
-				}*/ 
+            $('#horseRightSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + 'Nr: ' + numerStartowy +  '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
+            var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
+			horsesLeft = _.without(horsesLeft, _.findWhere(horsesLeft, {id: id}));
             horsesRight.push(horse);
-			//console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
+			console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
 		}  
 });
 
 fromRightToLeft.addEventListener('click', function(){
-	
+	 	var id = $("#horseRightSelectList option:selected").attr('id');
+        var nazwa = $("#horseRightSelectList option:selected").attr('nazwa');
+        var hodowca = $("#horseRightSelectList option:selected").attr('hodowca');
+        if(typeof id != 'undefined') { 
+            console.log(nazwa + " <-");
+            //$("#horseRightSelectList option:selected").remove();
+			$("#horseRightSelectList").remove();
+            $('#horseLeftSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
+            var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
+			numerStartowy -= 1;
+			//TODO Usunięcie z prawej tablicy
+
+            horsesLeft.push(horse);
+			console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
+		}  
 });
 
 var addGroupFunc = function(idCompetition){
