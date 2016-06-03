@@ -12,6 +12,9 @@ var addGroup = document.getElementById('addGroupWindow');
 var addGroupButt = document.getElementById('addGroupButt');
 var cancelAddGroup = document.getElementById('cancelAddGroup');
 var horseLeftSelect = document.getElementById('horseLeftSelectList');
+var horseRightSelect = document.getElementById('horseRightSelectList');
+var fromLeftToRight = document.getElementById('fromLeftToRight');
+var fromRightToLeft = document.getElementById('fromRightToLeft');
 
 // Błędy -----------------------------------------------------------------
 var error = document.getElementById('errorWindow');
@@ -36,6 +39,9 @@ var cTable = $('#compTable').DataTable({
 });
 
 // Dodawanie Grupy -----------------------------------------------------------------
+var horsesLeft = [];
+var horsesRight = [];
+var numerStartowy = 1;
 cancelAddGroup.addEventListener('click', function(){
 	hideAllShowHome();	
 });
@@ -44,24 +50,54 @@ addGroupButt.addEventListener('click', function(){
 	//TODO przycisk dodający grupe
 });
 
+fromLeftToRight.addEventListener('click', function(){
+        var id = $("#horseLeftSelectList option:selected").attr('id');
+        var nazwa = $("#horseLeftSelectList option:selected").attr('nazwa');
+        var hodowca = $("#horseLeftSelectList option:selected").attr('hodowca');
+        if(typeof id != 'undefined') { 
+            console.log(nazwa + " ->");
+            $("#horseLeftSelectList option:selected").remove();
+            $('#horseRightSelectList').append('<option id="' + id + '" nazwa="' + nazwa + '" hodowca="' + hodowca + '">' + 'Nr: ' + numerStartowy + '  Nazwa: ' + nazwa + '  Hodowca: ' + hodowca + '</option>');
+            var horse = {id:id, nazwa:nazwa, hodowca:hodowca};
+			numerStartowy += 1;
+			//TODO Usunięcie z lewej tablicy
+				/*var index = horsesLeft.indexOf(horse[id]);
+				if (index > -1) {
+					horsesLeft.splice(index, 1);
+				}*/ 
+            horsesRight.push(horse);
+			//console.log('HorsesLeft: ' + horsesLeft.length + ' Right: ' + horsesRight.length);
+		}  
+});
+
+fromRightToLeft.addEventListener('click', function(){
+	
+});
+
 var addGroupFunc = function(idCompetition){
 	hideAll();
 	addGroup.style.display = 'block';	
-	var horsesLeft = [];
+	loadAllHorsesToLeftTable();
+};
+
+var loadLeftOptions = function(){
+	var horseAvailableList = "";
+	horsesLeft.forEach(function(horse){
+		horseAvailableList += '<option id="' + horse.id + '" nazwa="' + horse.nazwa + '" hodowca="' + horse.hodowca + '" >' + 'Nazwa: ' + horse.nazwa + '  Hodowca: ' + horse.hodowca + '</option>';
+	});
+	horseLeftSelect.innerHTML = horseAvailableList;
+};
+
+var loadAllHorsesToLeftTable = function(){
 	socket.emit('get horses');
     socket.on('get horses', function (horses) {		
+		horsesLeft = [];
         horses.forEach(function (horse) {
             var oneHorse = {id:horse._id, nazwa:horse.nazwa, hodowca:horse.hodowca};
             horsesLeft.push(oneHorse);
         });
-		var horseAvailableList = "";
-		horsesLeft.forEach(function(horse){
-			horseAvailableList += '<option id="' + horse.id + '" nazwa="' + horse.nazwa + '" hodowca="' + horse.hodowca + '" >' + 'Nazwa: ' + horse.nazwa + '  Hodowca: ' + horse.hodowca + '</option>';
-		});
-		horseLeftSelect.innerHTML = horseAvailableList;
+		loadLeftOptions();
 	});
-	// TODO obsługa tworzenia grupy, dodanie listy z koniami do wyboru
-	// obsługa listy startowej
 };
 
 // Dodawanie Zawodów -----------------------------------------------------------------
