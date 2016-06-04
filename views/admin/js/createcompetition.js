@@ -88,24 +88,23 @@ cancelAddGroup.addEventListener('click', function(){
 });
 
 addGroupButt.addEventListener('click', function(){
-	//TODO przycisk dodający grupe
 	var nazwaGrupy = $('#nazwaGrupy').val();
-    var plecGrupy = $('#plecGrupy').val();
+    var plecGrupy = $('#plecGrupy').val();	
 	socket.emit('add group',
-	{
-		nazwa: nazwaGrupy,
-        plec: plecGrupy
-	});	
-	//var grpId;
-	socket.on('group id', function (groupId) {
+		{
+			nazwa: nazwaGrupy,
+			plec: plecGrupy
+		});	
+	setTimeout(function() {
+	socket.emit('random judges', compId);
+	},200); // <-- opóźnia aby była grupa gdy przyjdzie odp od serv
+		socket.on('group id', function (groupId) {		
 			socket.on('horseList id', function (horseListId) {
-				//error.style.display = 'block';
-				//errorMessage.innerHTML = "id " + horseListId;
-			socket.emit('add horseElem to group',
-			{
-				groupName: nazwaGrupy,
-				horseElemId: horseListId
-			});			
+				socket.emit('add horseElem to group',
+				{
+					groupName: nazwaGrupy,
+					horseElemId: horseListId
+				});			
 			});
 			horsesRight.forEach(function(horse){
 				socket.emit('add horse to list',
@@ -115,16 +114,24 @@ addGroupButt.addEventListener('click', function(){
 					id_grupa: groupId
 				});	
 			});
+			socket.on('random judges', function (randomJudgesList){
+				socket.emit('add randomJudges to group', 
+				{
+					groupName: nazwaGrupy,
+					randomJudgesList: randomJudgesList
+				});
+			});	
 			setTimeout(function() {
-				socket.emit('add group to comp',  // << ------------ to do przetestowania
+				socket.emit('add group to comp', 
 				{
 					groupId: groupId,
 					compId: compId
 				});
-			},1000);
-	});	
-		
-	//hideAllShowHome();	
+			},1000); // <-- opóźnia aby na końcu dodać
+		});
+	//error.style.display = 'block';
+	//errorMessage.innerHTML = "id " + horseListId;
+	hideAllShowHome();	
 });
 
 
