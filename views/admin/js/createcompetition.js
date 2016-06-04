@@ -59,20 +59,22 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 	socket.on('downloaded groups', function (list) {	
 		
 		console.log('downloadedList: ' + list);
+		console.log('downloadedListgrp: ' + list.grupy);
 		console.log('---------------------------------');
 		showGroupsTable.clear();
-		list.grupy.forEach(function (oneGroup) {
+		list.grupy.forEach(function (oneGroupId) {
 			
 			//var groupObj = groupSchema.validate(oneGroup);
 			//console.log('one groupObj: ' + groupObj);
 			//console.log('nazwa: ' + oneGroup.nazwa);
-			console.log('one Group: ' + oneGroup);
+			console.log('one Group: ' + oneGroupId);
 			console.log('++++++++++');
-		});
-            //var data =[ list.nazwa ];
-            //showGroupsTable.row.add(data).draw();
+			var data =[ oneGroupId ];
+            showGroupsTable.row.add(data).draw();
 			
-			/*$('.delete-'+list._id).click(function(){
+		});
+         /*  
+			$('.delete-'+list._id).click(function(){
                 console.log('remove competition: ' + list._id);
                 socket.emit('remove competition', { id: list._id });
                 refreshComp();

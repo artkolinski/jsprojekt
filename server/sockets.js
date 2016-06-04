@@ -47,26 +47,16 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			Zawody
 				.findOne({ _id: data.idCompetitions })
 				.populate('grupa') // <--
-				.exec(function (err, grupy) {
-				  
-					console.log('Jedna grupa: ' + grupy);
-					groupList = grupy;
-					//console.log('-------------------------');
-					//console.log('Jedna grupa: ' + grupa.grupa[0]);
-					//groupList.push(grupa);
-					//console.log('Grupy:  ' + grupa);
-				  //var grupaObj = {nazwa:grupa.grupy.nazwa};
-				  //groupList.push(grupaObj);
+				.exec(function (err, zawody) {			  
+					console.log('zawody: ' + zawody);
+					//console.log('zawody: ' + zawody.grupy);
+					groupList = zawody;
 				});
-			//groupList.grupy.forEach(function(oneGrp){
-				//console.log('oneGrp: ' + oneGrp);
-			//});
-			//console.log('Lista grup: ' + groupList);
 			setTimeout(function() {
 				socket.emit('downloaded groups', groupList);
 				console.log('Emit Downloadu grup');
 			},300);
-			//return nazwy grup
+			//return id grup
 		});
 		
 		// Dodawanie grupy -------------------------
