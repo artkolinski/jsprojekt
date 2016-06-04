@@ -2,6 +2,9 @@
 body {
   background: lightgrey;
 }
+#votingContainer {
+  width: 600px;
+}
 .paging-nav {
   justify-content: center;
   align-items: center;

@@ -10,18 +10,55 @@
    <div id="wrapper">
       <% include sidebar %>
       <div id="page-content-wrapper">
-              <div id="Container">
+              <div id="votingContainer">
+				<div id="infoWindow">
+                   	   <p class="lead">Informacje</p>
+					   <h3 id=infoMessage></h3>
+               		   <h4 id=infoMessage2></h4>
+               		   <h4 id=infoMessage3></h4></br>
+                </div>
+                
+                <div id="Window10">
+                	<div class="col-md-12">
+							<p class="lead">Głosowanie</p>
+					</div>
+                	Typ: <div id="type10">-</div>
+                	<input id="typeSlider10" type="range" min="1" max="10">
+                	
+                	Głowa i szyja: <div id="head10">-</div>
+                	<input id="headSlider10" type="range" min="1" max="10">
+                	
+                	Kłoda: <div id="kloda10">-</div>
+                	<input id="klodaSlider10" type="range" min="1" max="10">
+                	
+                	Nogi: <div id="legs10">-</div>
+                	<input id="legsSlider10" type="range" min="1" max="10">
+                	
+                	Ruch: <div id="movement10">-</div>
+                	<input id="movementSlider10" type="range" min="1" max="10">
+                	<button id="vote10">Głosuj</button>
+                </div> 
+                <div id="Window105">
+                	105
+                </div> 
+                <div id="Window20">
+                	20
+                </div> 
+                <div id="Window205">
+                	205
+                </div> 
 				<div id="votingWindow">
 					<div class="page-content inset">
 						<div class="col-md-12">
-							<p class="lead">Głosowanie</p>
+							<p class="lead">Inne</p>
 						</div>
+							
 					</div>  
 					<script src="js/jquery-1.12.3.min.js"></script> 
 					<script src="js/jquery.dataTables.min.js"></script>
 					<script src="js/socket.io.js"></script>
 					<script src="js/judgevoting.js"></script>     
-                 </div>
+                </div>
           </div>
        </div>  
     </div>
