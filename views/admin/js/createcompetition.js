@@ -20,7 +20,12 @@ var showGroupsWindow = document.getElementById('showGroupsWindow');
 var showGroupsClose = document.getElementById('showGroupsClose');
 var showGroupsTable = $('#showGroupsTable').DataTable({
     "iDisplayLength": -1,
-    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
+	"createdRow" : function( row, data, index ) {
+        if( data.hasOwnProperty("id") ) {
+            row.id = data.id;
+        }       
+    }
 });
 
 // Błędy -----------------------------------------------------------------
@@ -62,23 +67,29 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 		console.log('downloadedListgrp: ' + list.grupy);
 		console.log('---------------------------------');
 		showGroupsTable.clear();
-		list.grupy.forEach(function (oneGroupId) {
-			
-			//var groupObj = groupSchema.validate(oneGroup);
-			//console.log('one groupObj: ' + groupObj);
-			//console.log('nazwa: ' + oneGroup.nazwa);
-			console.log('one Group: ' + oneGroupId);
-			console.log('++++++++++');
-			var data =[ oneGroupId ];
+		list.grupy.forEach(function (oneGroup) {
+			console.log('one Group: ' + oneGroup.nazwa);
+			//console.log('one Groupid: ' + oneGroup._id);
+			//console.log('++++++++++');
+			var data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+			data.id = oneGroup._id;
             showGroupsTable.row.add(data).draw();
 			
+			$('.start-'+oneGroup._id).click(function(){
+                startGroupFunc(oneGroup._id);
+            });
+			
+			/* TODO Usuwanie pojedynczej grupy z zawodów
+			$('.delete-'+oneGroup._id).click(function(){
+                console.log('remove group: ' + list._id);
+                socket.emit('remove group from comp', { idGrp: oneGroup._id, compId: compId });
+				//oTable.fnDeleteRow(oTable.fnGetPosition(selected_tr));		//showGroupsTable.fnDeleteRow(showGroupsTable.fnGetPosition($('tr[name=docId]')));
+				
+            });
+			*/
 		});
          /*  
-			$('.delete-'+list._id).click(function(){
-                console.log('remove competition: ' + list._id);
-                socket.emit('remove competition', { id: list._id });
-                refreshComp();
-            });
+			
 			$('.addgroup-'+list._id).click(function(){
 				compName = list.nazwa;
                 addGroupFunc(list._id);
@@ -88,6 +99,12 @@ var showGroupsFunc = function(idCompetitions, nameComp){
             });*/
 	});
 };
+
+//Start Grupy -----------------------------------------------------------------
+var startGroupFunc = function(idGrupy){
+	
+};
+
 
 // Dodawanie Grupy -----------------------------------------------------------------
 var compId = "";
@@ -291,85 +308,3 @@ window.onload = function() {
 	hideAllShowHome();
 	refreshComp();
 };	
-
-/*
-var refresh = function(){
-    console.log('get horses');
-    socket.emit('get horses');
-    socket.on('get horses', function (horses) {
-       $('#tbody').empty();
-        hTable.clear();
-        horses.forEach(function (horse) {
-            var data =[ horse.nazwa, horse.plec, horse.dataur, horse.hodowca,'<button class="modify-' + horse._id + '">Edycja</button>','<button class="delete-' + horse._id + '">Usuń</button>'];
-            data.id = horse._id;
-            hTable.row.add(data).draw();
-            $('.modify-'+horse._id).click(function(){
-                $('#horse').css("visibility", "hidden");
-                
-                var site = '<div id="editForm">';
-                site += '<table class="table table-bordered table-striped"><tr><th>Nazwa</th><th>Płeć</th><th>Data urodzin</th><th>Hodowca</th><th></th><th></th></tr>';
-                site += '<tr><th><input id="editNazwa" value='+horse.nazwa+' /></td></th></br>';
-                if(horse.plec == "Klacz"){
-                    site += '<th><select id="editPlec"><option value="Klacz" selected>Klacz</option><option value="Koń">Koń</option></select></td></th></br>';
-                }else{
-                    site += '<th><select id="editPlec"><option value="Klacz">Klacz</option><option value="Koń" selected>Koń</option></select></td></th></br>';
-                }
-				site += '<td><input type="date" id="editDataur" value='+horse.dataur+' /></td>';
-                site += '<th><input id="editHodowca" value='+horse.hodowca+' /></td></th></br>';
-                site += '<th><button id="editOk">Edytuj</button></th>';
-                site += '<th><button id="editCancel">Anuluj</button></th></tr>';
-                site += '</table></div>';
-                $('#editHorse').append(site);
-
-                var editForm = document.getElementById('editForm');
-                var editOk = document.getElementById('editOk');
-                var editCancel = document.getElementById('editCancel');
-
-                editOk.addEventListener('click', function () {
-                    console.log('update horse: ' + horse._id);
-                    socket.emit('update horse', {
-                        id: horse._id,
-                        nazwa: $('#editNazwa').val(),
-                        plec: $('#editPlec').val(),
-						dataur: $('#editDataur').val(),
-                        hodowca: $('#editHodowca').val()
-                    });
-                    editForm.remove();
-                    $('#horse').css("visibility", "visible");
-                    refresh();
-                });
-
-                editCancel.addEventListener('click', function(){
-                    editForm.remove();
-                    $('#horse').css("visibility", "visible");
-                });
-            });
-
-            $('.delete-'+horse._id).click(function(){
-                console.log('remove horse: ' + horse._id);
-                socket.emit('remove horse', { id: horse._id });
-                refresh();
-            });
-        });
-    });
-};
-
-window.onload = function() {
-    refresh();
-};
-
-addHorse.addEventListener('click', function(){
-    var nazwa = $('#nazwa').val();
-    var plec = $('#plec').val();
-	var dataur = $('#dataur').val();
-    var hodowca = $('#hodowca').val();
-    socket.emit('add horse',
-        {
-            nazwa: nazwa,
-            plec: plec,
-			dataur: dataur,
-            hodowca: hodowca
-        }
-    );
-    refresh();
-});*/

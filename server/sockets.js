@@ -46,10 +46,10 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
 			Zawody
 				.findOne({ _id: data.idCompetitions })
-				.populate('grupa') // <--
+				.populate('grupy') // <--
 				.exec(function (err, zawody) {			  
-					console.log('zawody: ' + zawody);
-					//console.log('zawody: ' + zawody.grupy);
+				console.log('zawody: ' + zawody);
+					console.log('zawody: ' + zawody.grupy.nazwa);
 					groupList = zawody;
 				});
 			setTimeout(function() {
@@ -59,49 +59,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			//return id grup
 		});
 		
-		// Dodawanie grupy -------------------------
-			
-		socket.on('add group', function(data){
-            var model = Grupa;
-                var obj = new model({
-                    nazwa: data.nazwa,
-                    plec: data.plec,
-                    oceniona: false,
-					aktywna: false
-                });
-				obj.save(function (err, item) {
-                    console.dir(err);
-                    console.log(item);
-                });
-					socket.emit('group id', obj._id);
-        });
-		socket.on('add horse to list', function(data){
-            var model = Element;
-                var obj = new model({
-                    numerstartowy: data.numerstartowy,
-                    id_horse: data.id_horse,
-					id_grupa: data.id_grupa
-                });
-				obj.save(function (err, item) {
-                    console.dir(err);
-                    console.log(item);
-                });
-					socket.emit('horseList id', obj._id);
-        });	
-		socket.on('add horseElem to group', function(data){	// Złączenie <-------	
-			Element.find({_id: data.horseElemId}).exec(function (err, element){
-						  if (err) console.log(err);
-							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
-							  if (err) console.log(err);
-							  grupa.listastartowa.push(data.horseElemId);	
-							  grupa.save(function (err, item) {
-							  });
-							});
-				});
-        });	
-		socket.on('random judges', function(compId){
-			var contains = function(needle) {
-				// Per spec, the way to identify NaN is that it is not equal to itself
+		var contains = function(needle) {
 				var findNaN = needle !== needle;
 				var indexOf;
 
@@ -126,7 +84,49 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 
 				return indexOf.call(this, needle) > -1;
 			};
-			
+		
+		// Dodawanie grupy -------------------------		
+		socket.on('add group', function(data){
+            var model = Grupa;
+                var obj = new model({
+                    nazwa: data.nazwa,
+                    plec: data.plec,
+                    oceniona: false,
+					aktywna: false
+                });
+				obj.save(function (err, item) {
+                    console.dir(err);
+                    console.log(item);
+                });
+					socket.emit('group id', obj._id);
+        });
+		socket.on('add horse to list', function(data){ // Dodanie relacji <-------
+            var model = Element;
+                var obj = new model({
+                    numerstartowy: data.numerstartowy,
+                    id_horse: data.id_horse,
+					id_grupa: data.id_grupa
+                });		
+				//obj.id_horse.push(data.id_horse);
+				//obj.id_grupa.push(data.id_grupa);
+				obj.save(function (err, item) {
+                    //console.dir(err);
+                    //console.log(item);
+                });
+					socket.emit('horseList id', obj._id);
+        });	
+		socket.on('add horseElem to group', function(data){	// Złączenie <-------	
+			Element.find({_id: data.horseElemId}).exec(function (err, element){
+						  if (err) console.log(err);
+							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
+							  if (err) console.log(err);
+							  grupa.listastartowa.push(data.horseElemId);	
+							  grupa.save(function (err, item) {
+							  });
+							});
+				});
+        });	
+		socket.on('random judges', function(compId){
 			var quantity;
 			Zawody.findOne({_id: compId}).exec(function (err, zawody){
 							  if (err) console.log(err);
@@ -161,23 +161,38 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							if (err) console.log(err);		  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
-							  grupa.sedziowie.push(randJudge._id);	
-							  grupa.save(function (err, item) {
-							  });
-							});
-						
+							  if(contains.call(grupa.sedziowie,randJudge._id)){
+								 console.log('juz mamy takiego randomJudg');
+								 }else{
+								 	grupa.sedziowie.push(randJudge._id);	
+									grupa.save(function (err, item) {});
+								 }	  
+							});		
 				});
 			});
-        });
-		
+        });	
 		socket.on('add group to comp', function(data){	// Złączenie <-------
 				Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
 					if (err) console.log(err);
-					zawody.grupy.push(data.groupId);
-					zawody.save(function (err, item) {});
+					if(contains.call(zawody.grupy,data.groupId)){
+						console.log('juz jest taka grp');
+					}else{
+						zawody.grupy.push(data.groupId);
+						zawody.save(function (err, item) {});
+					}
 				});
         });	
-		
+		//TODO usuwanie grupy
+		/*
+		socket.on('remove group from comp', function (data) {
+            console.log('remove group: ' + data.idGrp);
+			Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
+				_.without(zawody.grupy, _.findWhere(zawody.grupy, data.idGrp));
+			});
+            //Grupa.find({ _id: data.id }).remove().exec();
+        });
+		var _ = require('underscore');
+		*/
         // Horses -------------------------       
         socket.on('add horse', function(data){
             console.log('add horse');
