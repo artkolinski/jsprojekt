@@ -76,9 +76,8 @@ var showGroupsFunc = function(idCompetitions, nameComp){
             showGroupsTable.row.add(data).draw();
 			
 			$('.start-'+oneGroup._id).click(function(){
-                startGroupFunc(oneGroup._id);
-            });
-			
+                startGroupFunc(oneGroup._id, idCompetitions, nameComp);
+            });			
 			/* TODO Usuwanie pojedynczej grupy z zawodów
 			$('.delete-'+oneGroup._id).click(function(){
                 console.log('remove group: ' + list._id);
@@ -88,21 +87,14 @@ var showGroupsFunc = function(idCompetitions, nameComp){
             });
 			*/
 		});
-         /*  
-			
-			$('.addgroup-'+list._id).click(function(){
-				compName = list.nazwa;
-                addGroupFunc(list._id);
-            });
-			$('.groups-'+list._id).click(function(){
-                showGroupsFunc(list._id);
-            });*/
 	});
 };
 
 //Start Grupy -----------------------------------------------------------------
-var startGroupFunc = function(idGrupy){
-	
+var startGroupFunc = function(idGrupy, idCompetitions, nameComp){
+	var data = {idGrupy:idGrupy, idCompetitions:idCompetitions, nameComp:nameComp};
+	socket.emit('start group', data);
+	showGroupsFunc(idCompetitions, nameComp);
 };
 
 

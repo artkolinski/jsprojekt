@@ -1,5 +1,7 @@
 /*jshint node: true */
 module.exports = function (app, passport, Account, role) { 
+	
+	// Admin ------------------------------------
 	//app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
     app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');
@@ -18,7 +20,12 @@ module.exports = function (app, passport, Account, role) {
     app.get('/informacje', function (req, res) {
         res.render('informations');
     });
-
+	
+	// Sedzia ------------------------------------
+	app.get('/judge/judgevoting', function (req, res) {
+        res.render('judge/judgevoting');
+    });
+	
     // Passport ------------------------------------
      app.get('/', function (req, res) {
           res.render('index', { 
@@ -29,6 +36,7 @@ module.exports = function (app, passport, Account, role) {
     app.get('/register', role.can('access admin pages'), function(req, res) {
           res.render('register', { });
      });
+	
 	// Register backdoor ---------------------------
 	app.get('/register/backdoor', function(req, res) {
           res.render('register', { });

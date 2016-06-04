@@ -39,24 +39,36 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             });
         });	
 		
+		// Start grupy -------------------------
+		socket.on('start group', function (data) { //idGrupy, idCompetitions, nameComp
+			Grupa.findOne({_id: data.idGrupy}).exec(function (err, grupa){
+				console.log('Grupa przy starcie', grupa);
+				if(grupa.aktywna === false){
+					grupa.aktywna = true;
+					grupa.save(function (err, item) {});
+				}else{
+					console.log('this group is active');
+				}
+			});
+		});
+		
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
-			console.log('Wejście do get groups');
+			//console.log('Wejście do get groups');
 			var groupList;
-			console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
+			//console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
 			Zawody
 				.findOne({ _id: data.idCompetitions })
 				.populate('grupy') // <--
 				.exec(function (err, zawody) {			  
-				console.log('zawody: ' + zawody);
-					console.log('zawody: ' + zawody.grupy.nazwa);
+					//console.log('zawody: ' + zawody);
+					//console.log('zawody: ' + zawody.grupy.nazwa);
 					groupList = zawody;
 				});
 			setTimeout(function() {
 				socket.emit('downloaded groups', groupList);
-				console.log('Emit Downloadu grup');
+				//console.log('Emit Downloadu grup');
 			},300);
-			//return id grup
 		});
 		
 		var contains = function(needle) {
@@ -107,13 +119,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
                     id_horse: data.id_horse,
 					id_grupa: data.id_grupa
                 });		
-				//obj.id_horse.push(data.id_horse);
-				//obj.id_grupa.push(data.id_grupa);
-				obj.save(function (err, item) {
-                    //console.dir(err);
-                    //console.log(item);
-                });
-					socket.emit('horseList id', obj._id);
+				obj.save(function (err, item) {});
+				socket.emit('horseList id', obj._id);
         });	
 		socket.on('add horseElem to group', function(data){	// Złączenie <-------	
 			Element.find({_id: data.horseElemId}).exec(function (err, element){
