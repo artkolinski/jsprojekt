@@ -41,18 +41,25 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
+			console.log('Wejście do get groups');
 			var groupList = [];
-			console.log('idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
+			console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
 			Zawody
-				.findOne({ nazwa: data.nameComp })
-				.populate('grupy') // <--
+				.find({ _id: data.idCompetitions })
+				.populate('grupa') // <--
 				.exec(function (err, grupa) {
-				  console.log('The creator is ' + grupa);
+				  
+					console.log('Jedna grupa: ' + grupa.grupy[0].nazwa);	  
+					//groupList.push(grupa);
+					//console.log('Grupy:  ' + grupa);
 				  //var grupaObj = {nazwa:grupa.grupy.nazwa};
 				  //groupList.push(grupaObj);
 				});
-			
-			socket.emit('downloaded groups', groupList);
+			//console.log('Lista grup: ' + groupList);
+			setTimeout(function() {
+				socket.emit('downloaded groups', groupList);
+				console.log('Emit Downloadu grup');
+			},300);
 			//return nazwy grup
 		});
 		
