@@ -96,31 +96,35 @@ addGroupButt.addEventListener('click', function(){
 		nazwa: nazwaGrupy,
         plec: plecGrupy
 	});	
-	socket.on('horseList id', function (horseListId) {
-		//error.style.display = 'block';
-		//errorMessage.innerHTML = "id " + horseListId;
-		socket.emit('add horseElem to group',
-		{
-			groupName: nazwaGrupy,
-			horseElemId: horseListId
-		});			
-	});
+	//var grpId;
 	socket.on('group id', function (groupId) {
-		socket.emit('add group to comp',  // << ------------ to do przetestowania
+			socket.on('horseList id', function (horseListId) {
+				//error.style.display = 'block';
+				//errorMessage.innerHTML = "id " + horseListId;
+			socket.emit('add horseElem to group',
 			{
-				groupId: groupId,
-				compId: compId
+				groupName: nazwaGrupy,
+				horseElemId: horseListId
 			});			
-		horsesRight.forEach(function(horse){
-			socket.emit('add horse to list',
-			{
-				numerstartowy: horse.nr,
-                id_horse: horse.id,
-				id_grupa: groupId
-			});			
-		});		
-	});
-	hideAllShowHome();	
+			});
+			horsesRight.forEach(function(horse){
+				socket.emit('add horse to list',
+				{
+					numerstartowy: horse.nr,
+					id_horse: horse.id,
+					id_grupa: groupId
+				});	
+			});
+			setTimeout(function() {
+				socket.emit('add group to comp',  // << ------------ to do przetestowania
+				{
+					groupId: groupId,
+					compId: compId
+				});
+			},1000);
+	});	
+		
+	//hideAllShowHome();	
 });
 
 
