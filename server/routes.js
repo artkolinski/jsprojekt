@@ -23,7 +23,10 @@ module.exports = function (app, passport, Account, role) {
 	
 	// Sedzia ------------------------------------
 	app.get('/judge/judgevoting', function (req, res) {
-        res.render('judge/judgevoting');
+        res.render('judge/judgevoting', {
+			user : req.user,
+			login: req.isAuthenticated()
+		});
     });
 	
     // Passport ------------------------------------

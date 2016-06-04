@@ -43,7 +43,19 @@ movementSlider10.addEventListener('input', function () {
             $('#movement10').text($('#movementSlider10').val());
 });
 
-
+// Wejscie sedziego ------------------------------------------------
+var judgeId = "574984e5068effa002ce5b5f";
+var connected = false;
+//var judgeId = "";
+var searchHorsesToVote = function(){
+	socket.emit('judge connected', judgeId);
+	if(connected === false){
+		socket.on('judge connected', function(data){
+			var connected = true;
+		});
+	}
+	
+};
 
 // Ukrywanie i ładowanie okien ------------------------------------------------
 var hideAll = function(){
@@ -59,9 +71,12 @@ var hideAllShowVotingWindow = function(){
 	hideAll();
 	votingWindow.style.display = 'block';
 	Window10.style.display = 'block';
+	infoWindow.style.display = 'block';
+	//$('#infoMessage').text($('#idJudge').val()); // Pobieramy ID sędziego
 };
 
 window.onload = function() {
 	hideAllShowVotingWindow();
+	searchHorsesToVote();
 	//refreshComp();
 };	

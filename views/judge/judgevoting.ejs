@@ -13,7 +13,7 @@
               <div id="votingContainer">
 				<div id="infoWindow">
                    	   <p class="lead">Informacje</p>
-					   <h3 id=infoMessage></h3>
+					   <h3 id=infoMessage>wer</h3>
                		   <h4 id=infoMessage2></h4>
                		   <h4 id=infoMessage3></h4></br>
                 </div>
@@ -52,7 +52,15 @@
 						<div class="col-md-12">
 							<p class="lead">Inne</p>
 						</div>
+						<% if (login) { %>
+						  <p>Jesteś zalogowany jako: </br>
+							Login : <%= user.username %></br>
+							Imie : <%= user.imie %></br>
+							Nazwisko : <%= user.nazwisko %></br>
+							Masz uprawnienia : <b><%= user.role %></b><br/>
+							Twoje ID: <input id="idJudge" value="<%= user._id %>"/>
 							
+						<% } %>	
 					</div>  
 					<script src="js/jquery-1.12.3.min.js"></script> 
 					<script src="js/jquery.dataTables.min.js"></script>

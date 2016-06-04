@@ -52,11 +52,26 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			});
 		});
 		
+		// Sedziowie -------------------------
+		socket.on('judge connected', function (judgeId) { 
+			var horsesList;
+			Grupa
+				.findOne({ aktywna: true, oceniona: false })
+				.populate('listastartowa') // <--
+				.exec(function (err, grupa) {			  
+					console.log('konie: ' + grupa);
+					console.log('konie 0: ' + grupa.listastartowa[0]);
+					console.log('konie id: ' + grupa.listastartowa[0].id_horse);
+					//console.log('zawody: ' + zawody.grupy.nazwa);
+				//	groupList = zawody;
+				});
+			//setTimeout(function() {
+			//	socket.emit('downloaded groups', groupList);
+			//},300);
+		});	
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
-			//console.log('Wejście do get groups');
 			var groupList;
-			//console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
 			Zawody
 				.findOne({ _id: data.idCompetitions })
 				.populate('grupy') // <--
@@ -67,7 +82,6 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				});
 			setTimeout(function() {
 				socket.emit('downloaded groups', groupList);
-				//console.log('Emit Downloadu grup');
 			},300);
 		});
 		
