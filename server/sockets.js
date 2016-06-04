@@ -42,14 +42,17 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
 			console.log('Wejście do get groups');
-			var groupList = [];
+			var groupList;
 			console.log('Get grps idZaw: ' + data.idCompetitions + ' nazwaZaw: ' + data.nameComp);
 			Zawody
-				.find({ _id: data.idCompetitions })
+				.findOne({ _id: data.idCompetitions })
 				.populate('grupa') // <--
-				.exec(function (err, grupa) {
+				.exec(function (err, grupy) {
 				  
-					console.log('Jedna grupa: ' + grupa.grupy[0].nazwa);	  
+					console.log('Jedna grupa: ' + grupy);
+					groupList = grupy;
+					//console.log('-------------------------');
+					//console.log('Jedna grupa: ' + grupa.grupa[0]);
 					//groupList.push(grupa);
 					//console.log('Grupy:  ' + grupa);
 				  //var grupaObj = {nazwa:grupa.grupy.nazwa};

@@ -56,10 +56,18 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 	var data = {idCompetitions:idCompetitions, nameComp:nameComp};
 	socket.emit('get groups',data);
 	socket.on('downloaded groups', function (list) {
+		console.log('received list: ' + list);
+		//console.log('received listgrp: ' + list.grupy);
+		//console.log('received list0: ' + list.grupy[0]);
+		console.log('---------------------------------');
 		showGroupsTable.clear();
-		list.forEach(function (list) {
-            var data =[ list.nazwa ];
-            showGroupsTable.row.add(data).draw();
+		list.grupy.forEach(function (list) {
+			console.log('nazwa: ' + list.nazwa);
+			console.log('received list: ' + list);
+			console.log('++++++++++');
+            //var data =[ list.nazwa ];
+            //showGroupsTable.row.add(data).draw();
+			
 			/*$('.delete-'+list._id).click(function(){
                 console.log('remove competition: ' + list._id);
                 socket.emit('remove competition', { id: list._id });
