@@ -58,6 +58,9 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				  //var grupaObj = {nazwa:grupa.grupy.nazwa};
 				  //groupList.push(grupaObj);
 				});
+			//groupList.grupy.forEach(function(oneGrp){
+				//console.log('oneGrp: ' + oneGrp);
+			//});
 			//console.log('Lista grup: ' + groupList);
 			setTimeout(function() {
 				socket.emit('downloaded groups', groupList);
@@ -175,12 +178,12 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				Account.find({_id: randJudge._id}).exec(function (err, judge){
 						Account.create(judge, function (err, judgeCreated) {
 							if (err) console.log(err);
-							console.log('stworzony judge ' + judgeCreated);
-							console.log('nazwa grupy ' + data.groupName);			  
+							//console.log('stworzony judge ' + judgeCreated);
+							//console.log('nazwa grupy ' + data.groupName);			  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
 							  console.log('odczytana grp ' + grupa);
-							  grupa.sedziowie.push(judgeCreated);	
+							  grupa.sedziowie.push(randJudge._id);	
 							  //console.log('Groupa Table po --- ' + grupa);
 							 // console.log('Groupa2 Table after ' + grupa2);
 							  //console.log('zaw Table after ' + zawody);

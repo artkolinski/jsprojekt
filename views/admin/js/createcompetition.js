@@ -52,19 +52,23 @@ showGroupsClose.addEventListener('click', function(){
 var showGroupsFunc = function(idCompetitions, nameComp){
 	hideAll();
 	showGroupsWindow.style.display = 'block';
+	
 	console.log('idZaw: ' + idCompetitions + ' nazwaZaw: ' + nameComp);
 	var data = {idCompetitions:idCompetitions, nameComp:nameComp};
 	socket.emit('get groups',data);
-	socket.on('downloaded groups', function (list) {
-		console.log('received list: ' + list);
-		//console.log('received listgrp: ' + list.grupy);
-		//console.log('received list0: ' + list.grupy[0]);
+	socket.on('downloaded groups', function (list) {	
+		
+		console.log('downloadedList: ' + list);
 		console.log('---------------------------------');
 		showGroupsTable.clear();
-		list.grupy.forEach(function (list) {
-			console.log('nazwa: ' + list.nazwa);
-			console.log('received list: ' + list);
+		list.grupy.forEach(function (oneGroup) {
+			
+			//var groupObj = groupSchema.validate(oneGroup);
+			//console.log('one groupObj: ' + groupObj);
+			//console.log('nazwa: ' + oneGroup.nazwa);
+			console.log('one Group: ' + oneGroup);
 			console.log('++++++++++');
+		});
             //var data =[ list.nazwa ];
             //showGroupsTable.row.add(data).draw();
 			
@@ -80,9 +84,7 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			$('.groups-'+list._id).click(function(){
                 showGroupsFunc(list._id);
             });*/
-		});
 	});
-	
 };
 
 // Dodawanie Grupy -----------------------------------------------------------------
