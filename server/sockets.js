@@ -54,21 +54,39 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		
 		// Sedziowie -------------------------
 		socket.on('judge connected', function (judgeId) { 
-			var horsesList;
+			var objGrupa;
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
-				.exec(function (err, grupa) {			  
+				.exec(function (err, grupa) {	
+					objGrupa = grupa;
 					console.log('konie: ' + grupa);
-					console.log('konie 0: ' + grupa.listastartowa[0]);
-					console.log('konie id: ' + grupa.listastartowa[0].id_horse);
+					//console.log('konie 0: ' + grupa.listastartowa[0]);
+					//console.log('konie id: ' + grupa.listastartowa[0].id_horse);
 					//console.log('zawody: ' + zawody.grupy.nazwa);
 				//	groupList = zawody;
 				});
-			//setTimeout(function() {
-			//	socket.emit('downloaded groups', groupList);
-			//},300);
-		});	
+			setTimeout(function() {
+				socket.emit('judge connected', objGrupa);
+			},300);
+		});
+		socket.on('get horse table', function (listastartowa) {
+			var horseTable = [];
+			listastartowa.forEach(function(elem){
+				console.log('get horse table horseId: ' + elem.id_horse);
+				Horse
+					.findOne({ _id: elem.id_horse})
+					.exec(function (err, horse) {	
+						console.log('get horse table one: ' + horse);
+						horseTable.push(horse);
+					});
+				});
+			setTimeout(function() {
+				socket.emit('get horse table', horseTable);
+			},300);
+		}); 
+		
+		
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
 			var groupList;

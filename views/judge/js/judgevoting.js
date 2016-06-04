@@ -50,9 +50,18 @@ var connected = false;
 var searchHorsesToVote = function(){
 	socket.emit('judge connected', judgeId);
 	if(connected === false){
-		socket.on('judge connected', function(data){
+		socket.on('judge connected', function(objGrupa){
+			console.log('nazwa: '+objGrupa.nazwa);
+			console.log('kon1: '+objGrupa.listastartowa[0].id_horse);
+			socket.emit('get horse table', objGrupa.listastartowa);
 			var connected = true;
 		});
+		setTimeout(function() {
+			socket.on('get horse table', function(horseTable){
+				console.log('get horse table[0]: '+horseTable[0].nazwa);
+				console.log('get horse table[1]: '+horseTable[1].nazwa);
+			});
+		},300);
 	}
 	
 };
