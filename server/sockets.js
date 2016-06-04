@@ -100,20 +100,13 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
         });	
 		socket.on('add horseElem to group', function(data){	// Złączenie <-------	
 			Element.find({_id: data.horseElemId}).exec(function (err, element){
-						Element.create(element, function (err, element2) {
 						  if (err) console.log(err);
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
-							  grupa.listastartowa.push(element2);	
-							  //console.log('Groupa Table po --- ' + grupa);
-							 // console.log('Groupa2 Table after ' + grupa2);
-							  //console.log('zaw Table after ' + zawody);
+							  grupa.listastartowa.push(data.horseElemId);	
 							  grupa.save(function (err, item) {
-									//console.dir(err);
-									//console.log(item);
 							  });
 							});
-						});
 				});
         });	
 		socket.on('random judges', function(compId){
@@ -172,47 +165,26 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             });
 		});	
 		socket.on('add randomJudges to group', function(data){	// Złączenie <-------	
-			//console.log('Rand Judge dodawanie ' + data.randomJudgesList);
 			data.randomJudgesList.forEach(function(randJudge){
-				console.log('odczytany judge _id: ' + randJudge._id);
+				console.log('przed odczytany judge _id: ' + randJudge._id);
 				Account.find({_id: randJudge._id}).exec(function (err, judge){
-						Account.create(judge, function (err, judgeCreated) {
-							if (err) console.log(err);
-							//console.log('stworzony judge ' + judgeCreated);
-							//console.log('nazwa grupy ' + data.groupName);			  
+							if (err) console.log(err);		  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
-							  console.log('odczytana grp ' + grupa);
 							  grupa.sedziowie.push(randJudge._id);	
-							  //console.log('Groupa Table po --- ' + grupa);
-							 // console.log('Groupa2 Table after ' + grupa2);
-							  //console.log('zaw Table after ' + zawody);
 							  grupa.save(function (err, item) {
-									//console.dir(err);
-									//console.log(item);
 							  });
 							});
-						});
+						
 				});
 			});
         });
 		
 		socket.on('add group to comp', function(data){	// Złączenie <-------
-				Grupa.find({_id: data.groupId}).exec(function (err, grupa){
-						Grupa.create(grupa, function (err, grupa2) {
-						  if (err) console.log(err);
-							Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
-							  if (err) console.log(err);
-							  zawody.grupy.push(grupa2);	
-							  //console.log('Groups Table after ' + grupa);
-							 // console.log('Groupa2 Table after ' + grupa2);
-							  console.log('---------Dodaje grp do zawodow ');
-							  zawody.save(function (err, item) {
-									//console.dir(err);
-									//console.log(item);
-							  });
-							});
-						});
+				Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
+					if (err) console.log(err);
+					zawody.grupy.push(data.groupId);
+					zawody.save(function (err, item) {});
 				});
         });	
 		

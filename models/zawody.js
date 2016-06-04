@@ -6,6 +6,6 @@ var tableSchema = Schema({
     ocena: String,
 	aktywne: Boolean,
 	zakonczone: Boolean,
-	grupy: [{type: String, ref: 'grupa'}]
+	grupy: [{type: Schema.Types.ObjectId, ref: 'grupa'}]
 });
 module.exports = mongoose.model('zawody', tableSchema);
