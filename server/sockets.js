@@ -132,17 +132,54 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					console.log('ilosc koni: ' + liczbaKoni);
 					console.log('ilosc ocenSedziow: ' + liczbaOcen);
 					console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
-				///*
+					
+					grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
+					console.log('1. elemListyStart.id_horse: ' + elemListyStart.id_horse);
+						grupa.ocenysedziow.forEach(function(ocenaSedziego){
+							//TODO znaleźć ocene sedziego
+							
+							OcenaSedziego
+							//.findOne({id_horse:elemListyStart.id_horse})
+							//.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
+							.findOne({ _id: ocenaSedziego})
+							.exec(function (err, ocenaSedziego) {
+								console.log('111: ' + ocenaSedziego._id);
+								console.log('222: ' + elemListyStart.id_horse);
+								if(ocenaSedziego.id_horse == elemListyStart.id_horse){
+									console.log('2. idOceny: ' + ocenaSedziego.id_ocena);
+
+									Ocena
+										.findOne({ _id: ocenaSedziego.id_ocena})
+										.exec(function (err, ocenaDB) {
+											console.log('----------------------');
+											console.log('ID ' + ocenaDB._id);
+											console.log('Typ' + ocenaDB.typ);
+											console.log('glowa' + ocenaDB.glowa);
+											console.log('kloda' + ocenaDB.kloda);
+											console.log('nogi' + ocenaDB.nogi);
+											console.log('ruch' + ocenaDB.ruch);
+										});
+
+								}
+							});
+						}); 
+					});
+					
+				
+				
+				/*
 					//if(liczbaSedziow == (liczbaKoni * liczbaOcen)){
 						grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
 							//TODO wystawic ocene srednia dla kazdego konia
 							// do elemListyPrzypisac
 							console.log('elemListyStart: ' + elemListyStart);
-							console.log('elemListyStart.id_horse: ' + elemListyStart.id_horse);
+							
 							grupa.ocenysedziow.forEach(function(idOcenySedziego){ // < -- kazdy sedzia
-								console.log('idOcenySedziego: ' + idOcenySedziego);
+								console.log('1. idOcenySedziego: ' + idOcenySedziego);
+								console.log('2. elemListyStart.id_horse: ' + elemListyStart.id_horse);
 								OcenaSedziego
-								.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
+								.findOne({id_horse:elemListyStart.id_horse})
+								//.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
 								//.findOne({ _id: idOcenySedziego})
 								.exec(function (err, ocenaSedziego) {
 									console.log('err: ' + err);
@@ -168,7 +205,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					//	grupa.aktywna = false;
 					//	grupa.oceniona = true;
 				//	}
-				//*/
+				*/
 				});
 		};
 		
