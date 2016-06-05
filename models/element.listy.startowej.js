@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var tableSchema = Schema({
     numerstartowy: Number,
-    id_horse: { type: Schema.Types.ObjectId, ref: 'horse' },
+    id_horse: { type: Schema.Types.ObjectId, ref: 'horses' },
 	id_ocena: { type: Schema.Types.ObjectId, ref: 'ocena' },
 	id_grupa: { type: Schema.Types.ObjectId, ref: 'grupa' }
 });

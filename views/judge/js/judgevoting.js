@@ -67,6 +67,8 @@ vote10.addEventListener('click', function(){
 		idJudge:judgeId
 	};
 	socket.emit('create ocena_sedziego', ocena);
+	console.log('tab horsesToVote[0]: '+ horsesToVote[0]._id);
+	console.log('tab horsesToVote[0]: '+ horsesToVote[0].nazwa);
 	hideAllShowVotingWindow();
 });
 

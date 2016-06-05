@@ -89,7 +89,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		}); 
 		socket.on('create ocena_sedziego', function (data) {
 			//data: typ, glowa, kloda, nogi, ruch, idHorse, idJudge
-			var ocena = Ocena;
+				var ocena = Ocena;
                 var obj1 = new ocena({
                     typ: data.typ,
                     glowa: data.glowa,
@@ -98,19 +98,21 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					ruch: data.ruch
                 });
                 obj1.save(function (err, item) {});
-			var ocenaSedziego = OcenaSedziego;
+				var ocenaSedziego = OcenaSedziego;
                 var obj2 = new ocenaSedziego({
                     id_horse: data.idHorse,
 					id_ocena: obj1._id,
 					id_sedzia: data.idJudge
                 });
                 obj2.save(function (err, item) {});
-			Grupa.findOne({ aktywna: true, oceniona: false }).exec(function (err, grupa){
+				Grupa.findOne({ aktywna: true, oceniona: false }).exec(function (err, grupa){
 						  if (err) console.log(err);
 							  grupa.ocenysedziow.push(obj2._id);	
 							  grupa.save(function (err, item) {});		
 				});
-			checkMaybeIsEnd();
+				setTimeout(function() {
+					checkMaybeIsEnd();
+				},400);
 		});
 		
 		var checkMaybeIsEnd = function(){
@@ -118,14 +120,55 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
 				.exec(function (err, grupa) {	
-					//objGrupa = grupa;
-					console.log('ilosc sedziow: ' + grupa.sedziowie.length);
-					console.log('ilosc koni: ' + grupa.listastartowa.length);
-					console.log('ilosc ocenSedziow: ' + grupa.ocenysedziow.length);
-					//console.log('konie 0: ' + grupa.listastartowa[0]);
-					//console.log('konie id: ' + grupa.listastartowa[0].id_horse);
-					//console.log('zawody: ' + zawody.grupy.nazwa);
-				//	groupList = zawody;
+					var liczbaSedziow = grupa.sedziowie.length;
+					var liczbaKoni = grupa.listastartowa.length;
+					var liczbaOcen = grupa.ocenysedziow.length; // + ta która wchodzi
+					var sumaTyp = 0;
+					var sumaGlowa = 0;
+					var sumaKloda = 0;
+					var sumaNogi = 0;
+					var sumaRuch = 0;
+					console.log('ilosc sedziow: ' + liczbaSedziow);
+					console.log('ilosc koni: ' + liczbaKoni);
+					console.log('ilosc ocenSedziow: ' + liczbaOcen);
+					console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
+				///*
+					//if(liczbaSedziow == (liczbaKoni * liczbaOcen)){
+						grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
+							//TODO wystawic ocene srednia dla kazdego konia
+							// do elemListyPrzypisac
+							console.log('elemListyStart: ' + elemListyStart);
+							console.log('elemListyStart.id_horse: ' + elemListyStart.id_horse);
+							grupa.ocenysedziow.forEach(function(idOcenySedziego){ // < -- kazdy sedzia
+								console.log('idOcenySedziego: ' + idOcenySedziego);
+								OcenaSedziego
+								.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
+								//.findOne({ _id: idOcenySedziego})
+								.exec(function (err, ocenaSedziego) {
+									console.log('err: ' + err);
+									console.log('ocenaSedziego: ' + ocenaSedziego);
+									console.log('ocenaSedziego.id_ocena: ' + ocenaSedziego.id_ocena);
+									Ocena
+									.findOne({ _id: ocenaSedziego.id_ocena})
+									.exec(function (err, ocenaDB) {
+										console.log('----------------------');
+										console.log('ID ' + ocenaDB._id);
+										console.log('Typ' + ocenaDB.typ);
+										console.log('glowa' + ocenaDB.glowa);
+										console.log('kloda' + ocenaDB.kloda);
+										console.log('nogi' + ocenaDB.nogi);
+										console.log('ruch' + ocenaDB.ruch);
+									});
+								});
+								//Koniec szukania ocen
+							});
+							//Nastepny kon
+						});
+						// Konczymy ta grupe
+					//	grupa.aktywna = false;
+					//	grupa.oceniona = true;
+				//	}
+				//*/
 				});
 		};
 		
