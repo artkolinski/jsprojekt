@@ -135,32 +135,37 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					
 					grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
 					console.log('1. elemListyStart.id_horse: ' + elemListyStart.id_horse);
-						grupa.ocenysedziow.forEach(function(ocenaSedziego){
+						grupa.ocenysedziow.forEach(function(ocenaSedziego){   // < -- kazda ocena sedziego
 							//TODO znaleźć ocene sedziego
 							
-							OcenaSedziego
-							//.findOne({id_horse:elemListyStart.id_horse})
-							//.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
+							OcenaSedziego  // < -- jedna ocena
 							.findOne({ _id: ocenaSedziego})
-							.exec(function (err, ocenaSedziego) {
-								console.log('111: ' + ocenaSedziego._id);
-								console.log('222: ' + elemListyStart.id_horse);
-								if(ocenaSedziego.id_horse == elemListyStart.id_horse){
-									console.log('2. idOceny: ' + ocenaSedziego.id_ocena);
+							.exec(function (err, ocenaSedziego2) {
+								var ocenionyKon = ocenaSedziego2.id_horse;
+								var konListaSt = elemListyStart.id_horse;
+								console.log('kon z oceny:' + ocenionyKon+'.');
+								console.log('kon z l. st:' + konListaSt+'.');
+								console.log('idOceny    : ' + ocenaSedziego2.id_ocena);
+								console.log('-----------------------');
+								if(ocenionyKon.equals(konListaSt) === true){
+										console.log('2. idOceny: ' + ocenaSedziego2.id_ocena);
+										Ocena
+											.findOne({ _id: ocenaSedziego2.id_ocena})
+											.exec(function (err, ocenaDB) {
+												console.log('----------------------');
+												console.log('ID ' + ocenaDB._id);
+												console.log('Typ' + ocenaDB.typ);
+												console.log('glowa' + ocenaDB.glowa);
+												console.log('kloda' + ocenaDB.kloda);
+												console.log('nogi' + ocenaDB.nogi);
+												console.log('ruch' + ocenaDB.ruch);
+											});
 
-									Ocena
-										.findOne({ _id: ocenaSedziego.id_ocena})
-										.exec(function (err, ocenaDB) {
-											console.log('----------------------');
-											console.log('ID ' + ocenaDB._id);
-											console.log('Typ' + ocenaDB.typ);
-											console.log('glowa' + ocenaDB.glowa);
-											console.log('kloda' + ocenaDB.kloda);
-											console.log('nogi' + ocenaDB.nogi);
-											console.log('ruch' + ocenaDB.ruch);
-										});
-
-								}
+									}else{
+										console.log('nie znalazlem');
+										console.log('ocena kon z oceny: ' + ocenionyKon);
+										console.log('ocena kon z l. st: ' + konListaSt);
+									}
 							});
 						}); 
 					});
