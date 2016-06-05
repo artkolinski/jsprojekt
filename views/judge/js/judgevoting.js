@@ -39,10 +39,11 @@ var horseTable = $('#horseTable').DataTable({
     }
 });
 
-// Obsługa live sliderow -----------------------------------------------------------------
+// Obsługa Window10 -----------------------------------------------------------------
 typeSlider10.addEventListener('input', function () {
             $('#type10').text($('#typeSlider10').val());
 });
+
 headSlider10.addEventListener('input', function () {
             $('#head10').text($('#headSlider10').val());
 });
@@ -55,13 +56,27 @@ legsSlider10.addEventListener('input', function () {
 movementSlider10.addEventListener('input', function () {
             $('#movement10').text($('#movementSlider10').val());
 });
+vote10.addEventListener('click', function(){
+	var ocena = {
+		typ:$('#typeSlider10').val(), 
+		glowa:$('#headSlider10').val(), 
+		kloda:$('#klodaSlider10').val(), 
+		nogi:$('#legsSlider10').val(), 
+		ruch:$('#movementSlider10').val(), 
+		idHorse:votingHorseId, 
+		idJudge:judgeId
+	};
+	socket.emit('create ocena_sedziego', ocena);
+	hideAllShowVotingWindow();
+});
 
 // Wejscie sedziego ------------------------------------------------
 var judgeId = "574984e5068effa002ce5b5f";
+//var judgeId = "";
 var connected = false;
 var votingHorseId = "";
 var horsesToVote;
-//var judgeId = "";
+
 var searchHorsesToVote = function(){
 	socket.emit('judge connected', judgeId);
 	if(connected === false){
@@ -81,7 +96,6 @@ var searchHorsesToVote = function(){
 		},300);
 	}	
 };
-
 var loadHorseTable = function(){
 		horseTable.clear();
 		horsesToVote.forEach(function (list) {
@@ -90,9 +104,9 @@ var loadHorseTable = function(){
             horseTable.row.add(data).draw();
 			$('.vote-'+list._id).click(function(){
                 console.log('voting on: ' + list._id + " , " + list.nazwa);
+				hideAll();
 				Window10.style.display = 'block';
 				votingHorseId = list._id;
-				
             });
 		});
 };
