@@ -25,6 +25,19 @@ var vote10 = document.getElementById('vote10');
 
 // Glowne okno -----------------------------------------------------------------
 var votingWindow = document.getElementById('votingWindow');
+var horseTable = $('#horseTable').DataTable({
+    "columnDefs": [ {
+    "targets": [3],
+    "orderable": false
+    } ],
+    "iDisplayLength": -1,
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
+    "createdRow" : function( row, data, index ) {
+        if( data.hasOwnProperty("id") ) {
+            row.id = data.id;
+        }       
+    }
+});
 
 // Obsługa live sliderow -----------------------------------------------------------------
 typeSlider10.addEventListener('input', function () {
@@ -46,6 +59,8 @@ movementSlider10.addEventListener('input', function () {
 // Wejscie sedziego ------------------------------------------------
 var judgeId = "574984e5068effa002ce5b5f";
 var connected = false;
+var votingHorseId = "";
+var horsesToVote;
 //var judgeId = "";
 var searchHorsesToVote = function(){
 	socket.emit('judge connected', judgeId);
@@ -54,16 +69,32 @@ var searchHorsesToVote = function(){
 			console.log('nazwa: '+objGrupa.nazwa);
 			console.log('kon1: '+objGrupa.listastartowa[0].id_horse);
 			socket.emit('get horse table', objGrupa.listastartowa);
-			var connected = true;
+			//var connected = true;
 		});
 		setTimeout(function() {
 			socket.on('get horse table', function(horseTable){
-				console.log('get horse table[0]: '+horseTable[0].nazwa);
-				console.log('get horse table[1]: '+horseTable[1].nazwa);
+				horsesToVote = horseTable;
+				setTimeout(function() {
+					loadHorseTable();
+				},300);
 			});
 		},300);
-	}
-	
+	}	
+};
+
+var loadHorseTable = function(){
+		horseTable.clear();
+		horsesToVote.forEach(function (list) {
+            var data =[ list.nazwa, list.dataur, list.hodowca,'<button class="vote-' + list._id + '">Oceń</button>'];
+			data.id = list._id;
+            horseTable.row.add(data).draw();
+			$('.vote-'+list._id).click(function(){
+                console.log('voting on: ' + list._id + " , " + list.nazwa);
+				Window10.style.display = 'block';
+				votingHorseId = list._id;
+				
+            });
+		});
 };
 
 // Ukrywanie i ładowanie okien ------------------------------------------------
@@ -79,8 +110,8 @@ var hideAll = function(){
 var hideAllShowVotingWindow = function(){
 	hideAll();
 	votingWindow.style.display = 'block';
-	Window10.style.display = 'block';
-	infoWindow.style.display = 'block';
+	//Window10.style.display = 'block';
+	//infoWindow.style.display = 'block';
 	//$('#infoMessage').text($('#idJudge').val()); // Pobieramy ID sędziego
 };
 

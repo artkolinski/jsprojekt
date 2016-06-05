@@ -20,7 +20,7 @@
                 
                 <div id="Window10">
                 	<div class="col-md-12">
-							<p class="lead">Głosowanie</p>
+							<p class="lead">Głosowanie 1-10</p>
 					</div>
                 	Typ: <div id="type10">-</div>
                 	<input id="typeSlider10" type="range" min="1" max="10">
@@ -50,7 +50,17 @@
 				<div id="votingWindow">
 					<div class="page-content inset">
 						<div class="col-md-12">
-							<p class="lead">Inne</p>
+							<p class="lead">Konie</p>
+						<table id="horseTable" class="display" cellspacing="0" width="100%">
+                           <thead>
+                                <tr>
+									<th>Nazwa</th><th>Dataur</th><th>Hodowca</th><th>Oceń</th>
+                                </tr>                    
+                           </thead>
+                           <tfoot>
+
+                           </tfoot>
+                        </table>
 						</div>
 						<% if (login) { %>
 						  <p>Jesteś zalogowany jako: </br>
