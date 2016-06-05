@@ -132,7 +132,9 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					console.log('ilosc koni: ' + liczbaKoni);
 					console.log('ilosc ocenSedziow: ' + liczbaOcen);
 					console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
-					
+					//TODO sprawdzić czy liczbaKoni * liczbaSedziow = liczbaOcen
+					// wtedy mamy koniec zawodów
+				
 					grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
 					console.log('1. elemListyStart.id_horse: ' + elemListyStart.id_horse);
 						grupa.ocenysedziow.forEach(function(ocenaSedziego){   // < -- kazda ocena sedziego
@@ -163,54 +165,10 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 
 									}else{
 										console.log('nie znalazlem');
-										console.log('ocena kon z oceny: ' + ocenionyKon);
-										console.log('ocena kon z l. st: ' + konListaSt);
 									}
 							});
 						}); 
 					});
-					
-				
-				
-				/*
-					//if(liczbaSedziow == (liczbaKoni * liczbaOcen)){
-						grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
-							//TODO wystawic ocene srednia dla kazdego konia
-							// do elemListyPrzypisac
-							console.log('elemListyStart: ' + elemListyStart);
-							
-							grupa.ocenysedziow.forEach(function(idOcenySedziego){ // < -- kazdy sedzia
-								console.log('1. idOcenySedziego: ' + idOcenySedziego);
-								console.log('2. elemListyStart.id_horse: ' + elemListyStart.id_horse);
-								OcenaSedziego
-								.findOne({id_horse:elemListyStart.id_horse})
-								//.findOne({ _id: idOcenySedziego, id_horse:elemListyStart.id_horse})
-								//.findOne({ _id: idOcenySedziego})
-								.exec(function (err, ocenaSedziego) {
-									console.log('err: ' + err);
-									console.log('ocenaSedziego: ' + ocenaSedziego);
-									console.log('ocenaSedziego.id_ocena: ' + ocenaSedziego.id_ocena);
-									Ocena
-									.findOne({ _id: ocenaSedziego.id_ocena})
-									.exec(function (err, ocenaDB) {
-										console.log('----------------------');
-										console.log('ID ' + ocenaDB._id);
-										console.log('Typ' + ocenaDB.typ);
-										console.log('glowa' + ocenaDB.glowa);
-										console.log('kloda' + ocenaDB.kloda);
-										console.log('nogi' + ocenaDB.nogi);
-										console.log('ruch' + ocenaDB.ruch);
-									});
-								});
-								//Koniec szukania ocen
-							});
-							//Nastepny kon
-						});
-						// Konczymy ta grupe
-					//	grupa.aktywna = false;
-					//	grupa.oceniona = true;
-				//	}
-				*/
 				});
 		};
 		
