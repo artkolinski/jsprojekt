@@ -111,7 +111,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							  grupa.save(function (err, item) {});		
 				});
 				setTimeout(function() {
-					checkMaybeIsEnd();
+					refreshVotes(false); // <-- odswiezamy liste u widzow
+					//checkMaybeIsEnd();
 				},400);
 		});
 		
@@ -183,6 +184,11 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		
 		// Widzowie -------------------------
 		socket.on('get votes', function () {
+			refreshVotes(true);
+		});
+		
+		var refreshVotes = function(spectatorEnter){ // true, false
+			console.log('refreshVotes <-------------------------');
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
@@ -195,18 +201,17 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					var sumaKloda = 0;
 					var sumaNogi = 0;
 					var sumaRuch = 0;
-					var nazwiskoSedziego = "";
-					var nazwaKonia = "";
+					//var nazwiskoSedziego = "";
+					//var nazwaKonia = "";
 					var tabelaWynikow = [];
-					console.log('ilosc sedziow: ' + liczbaSedziow);
-					console.log('ilosc koni: ' + liczbaKoni);
-					console.log('ilosc ocenSedziow: ' + liczbaOcen);
-					console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
+					//console.log('ilosc sedziow: ' + liczbaSedziow);
+					//console.log('ilosc koni: ' + liczbaKoni);
+					//console.log('ilosc ocenSedziow: ' + liczbaOcen);
+					//console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
 					//TODO sprawdzić czy liczbaKoni * liczbaSedziow = liczbaOcen
-					// wtedy mamy koniec zawodów
-				
+					// wtedy mamy koniec zawodów	
 					grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
-					console.log('1. elemListyStart.id_horse: ' + elemListyStart.id_horse);
+					//console.log('1. elemListyStart.id_horse: ' + elemListyStart.id_horse);
 						grupa.ocenysedziow.forEach(function(ocenaSedziego){   // < -- kazda ocena sedziego
 							//TODO znaleźć ocene sedziego
 							OcenaSedziego  // < -- jedna ocena
@@ -214,32 +219,32 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							.exec(function (err, ocenaSedziego2) {
 								var ocenionyKon = ocenaSedziego2.id_horse;
 								var konListaSt = elemListyStart.id_horse;
-								console.log('kon z oceny:' + ocenionyKon+'.');
-								console.log('kon z l. st:' + konListaSt+'.');
-								console.log('idOceny    : ' + ocenaSedziego2.id_ocena);
-								console.log('-----------------------');
+								//console.log('kon z oceny:' + ocenionyKon+'.');
+								//console.log('kon z l. st:' + konListaSt+'.');
+								//console.log('idOceny    : ' + ocenaSedziego2.id_ocena);
+								//console.log('-----------------------');
 								if(ocenionyKon.equals(konListaSt) === true){
-										console.log('2. idOceny: ' + ocenaSedziego2.id_ocena);
+										//console.log('2. idOceny: ' + ocenaSedziego2.id_ocena);
 										Ocena
 											.findOne({ _id: ocenaSedziego2.id_ocena})
 											.exec(function (err, ocenaDB) {
-												console.log('----------------------');
+												/*console.log('----------------------');
 												console.log('ID ' + ocenaDB._id);
 												console.log('Typ' + ocenaDB.typ);
 												console.log('glowa' + ocenaDB.glowa);
 												console.log('kloda' + ocenaDB.kloda);
 												console.log('nogi' + ocenaDB.nogi);
-												console.log('ruch' + ocenaDB.ruch);
+												console.log('ruch' + ocenaDB.ruch);*/
 												Horse  // < -- Kon
 													.findOne({ _id: konListaSt})
 													.exec(function (err, kon) {
 														//nazwaKonia = kon.nazwa;
-														console.log('Koń: ' + kon.nazwa);
+														//console.log('Koń: ' + kon.nazwa);
 													Account  // < -- Sedzia
 														.findOne({ _id: ocenaSedziego2.id_sedzia})
 														.exec(function (err, sedzia) {
 															//nazwiskoSedziego = sedzia.nazwisko;
-															console.log('Sedzia: ' + sedzia.nazwisko);
+															//console.log('Sedzia: ' + sedzia.nazwisko);
 															var objVote = {
 																typ:ocenaDB.typ,
 																glowa:ocenaDB.glowa,
@@ -254,20 +259,20 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 															//nazwiskoSedziego = "";
 														});
 												});
-												
-												//setTimeout(function() {		
-												//},100);
 										});
 									}
 							});
 						}); 
 					});
 					setTimeout(function() {
-					socket.emit('refresh votes',tabelaWynikow);	
+						if(spectatorEnter === true){
+							socket.emit('refresh votes',tabelaWynikow);
+						}else{
+							socket.broadcast.emit('refresh votes',tabelaWynikow);
+						}	
 					},200);
 				});
-				
-		});
+		};
 		
 		// Wyświetlanie grup -------------------------
 		socket.on('get groups', function (data) {
