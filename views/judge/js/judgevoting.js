@@ -73,14 +73,15 @@ vote10.addEventListener('click', function(){
 });
 
 // Wejscie sedziego ------------------------------------------------
-var judgeId = "574984e5068effa002ce5b5f";
-//var judgeId = "";
+//var judgeId = "574984e5068effa002ce5b5fss";
+var judgeId = "";
 var connected = false;
 var votingHorseId = "";
 var horsesToVote;
 
 var searchHorsesToVote = function(){
 	socket.emit('judge connected', judgeId);
+	console.log('idSedziego:' + judgeId);
 	if(connected === false){
 		socket.on('judge connected', function(objGrupa){
 			console.log('nazwa: '+objGrupa.nazwa);
@@ -128,7 +129,8 @@ var hideAllShowVotingWindow = function(){
 	votingWindow.style.display = 'block';
 	//Window10.style.display = 'block';
 	//infoWindow.style.display = 'block';
-	//$('#infoMessage').text($('#idJudge').val()); // Pobieramy ID sędziego
+	// $('#infoMessage').text($('#idJudge').val()); // Pobieramy ID sędziego
+	judgeId = $('#idJudge').val();
 };
 
 window.onload = function() {

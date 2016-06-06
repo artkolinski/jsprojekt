@@ -2,18 +2,18 @@
 module.exports = function (app, passport, Account, role) { 
 	
 	// Admin ------------------------------------
-	//app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
-    app.get('/admin/horses', function (req, res) {
+	app.get('/admin/horses', role.can('access judge pages'), function (req, res) {
+    //app.get('/admin/horses', function (req, res) {
         res.render('admin/horses');
     });
 	
-    //app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
-    app.get('/admin/accounts', function (req, res) {
+    app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
+    //app.get('/admin/accounts', function (req, res) {
         res.render('admin/accounts');
     });
 	
-	//app.get('/admin/createcompetition', role.can('access admin pages'), function (req, res) {
-	app.get('/admin/createcompetition', function (req, res) {
+	app.get('/admin/createcompetition', role.can('access admin pages'), function (req, res) {
+	//app.get('/admin/createcompetition', function (req, res) {
         res.render('admin/createcompetition');
     });
     
@@ -22,7 +22,7 @@ module.exports = function (app, passport, Account, role) {
     });
 	
 	// Sedzia ------------------------------------
-	app.get('/judge/judgevoting', function (req, res) {
+	app.get('/judge/judgevoting', role.can('access judge pages'), function (req, res) {
         res.render('judge/judgevoting', {
 			user : req.user,
 			login: req.isAuthenticated()

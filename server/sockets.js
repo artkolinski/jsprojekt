@@ -465,10 +465,6 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             Account.update({_id: data.id}, data, function(err, numberAffected, rawResponse) {
             });
         });
-        
-        /*socket.on('disconnect', function(){
-            console.log('user disconnected');
-        });*/
     });   
 };
 
