@@ -40,6 +40,11 @@ module.exports = function (app, passport, Account, role) {
           res.render('register', { });
      });
 	
+	// Widzowie ------------------------------------
+	app.get('/spectators', function (req, res) {
+        res.render('spectators');
+    });
+	
 	// Register backdoor ---------------------------
 	app.get('/register/backdoor', function(req, res) {
           res.render('register', { });
