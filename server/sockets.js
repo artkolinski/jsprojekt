@@ -59,17 +59,22 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
 				.exec(function (err, grupa) {	
-					objGrupa = grupa;
-					console.log('konie: ' + grupa);
-					grupa.sedziowie.forEach(function(sedzia){
-						//console.log('sedzia._id ' + sedzia);
-						//console.log('judgeId ' + judgeId);
-							if(sedzia == judgeId){
-								setTimeout(function() {
-								socket.emit('judge connected', objGrupa);
-							},300);
-						}	
-					});
+					if(grupa === null){
+						console.log('brak aktywnych grup');
+					}
+						else{
+						objGrupa = grupa;
+						console.log('konie: ' + grupa);
+						grupa.sedziowie.forEach(function(sedzia){ // <-- jak null to sypie
+							//console.log('sedzia._id ' + sedzia);
+							//console.log('judgeId ' + judgeId);
+								if(sedzia == judgeId){
+									setTimeout(function() {
+									socket.emit('judge connected', objGrupa);
+								},300);
+							}	
+						});
+					}
 				});	
 		});
 		socket.on('get horse table', function (listastartowa) {

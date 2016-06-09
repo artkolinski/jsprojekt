@@ -86,7 +86,7 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			$('.delete-'+oneGroup._id).click(function(){
 				socket.emit('remove group from comp', {idCompetitions: idCompetitions, idGroup: oneGroup._id});
 				setTimeout(function() {
-					socket.emit('get groups',data);
+					socket.emit('get groups',{idCompetitions:idCompetitions, nameComp:nameComp});
 				},100);
             });
 			//*/
