@@ -353,7 +353,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				});
         });	
 		socket.on('random judges', function(compId){
-			var quantity;
+			var quantity = 0;
 			Zawody.findOne({_id: compId}).exec(function (err, zawody){
 							  if (err) console.log(err);
 							  quantity = zawody.liczbasedziow;
@@ -381,15 +381,20 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             });
 		});	
 		socket.on('add randomJudges to group', function(data){	// Złączenie <-------	
-			data.randomJudgesList.forEach(function(randJudge){
+			console.log('add randomJudges to group',data.randomJudgesList.length);
+			data.randomJudgesList.forEach(function(randJudge){	
 				console.log('przed odczytany judge _id: ' + randJudge._id);
 				Account.find({_id: randJudge._id}).exec(function (err, judge){
 							if (err) console.log(err);		  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
-								console.log('grupa.sedziowie',grupa.sedziowie);
-								console.log('randJudge._id',randJudge._id);
-							  if(contains.call(grupa.sedziowie,randJudge._id)){
+								//console.log('grupa.sedziowie',grupa.sedziowie);
+								//console.log('randJudge._id',randJudge._id);
+								//function findById(id) {
+								//  return _.contains(_.pluck(grupa.sedziowie, '_id'), randJudge._id);
+							//	}
+							  //if(contains.call(grupa.sedziowie,randJudge._id)){
+							    if(_.contains(_.pluck(grupa.sedziowie, '_id'), randJudge._id)){
 								 console.log('juz mamy takiego randomJudg');
 								 }else{
 								 	grupa.sedziowie.push(randJudge._id);	
@@ -403,8 +408,9 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
 					if (err) console.log(err);
 					if(contains.call(zawody.grupy,data.groupId)){
-						console.log('juz jest taka grp');
+						//console.log('juz jest taka grp');
 					}else{
+						//console.log('add grp to comp');
 						zawody.grupy.push(data.groupId);
 						zawody.save(function (err, item) {});
 					}
@@ -416,10 +422,11 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
             console.log('idCompetitions: ' + data.idCompetitions);
 			console.log('idGroup: ' + data.idGroup);
 			// usunięcie id grupy z zawodów
+
 			Zawody.findOne({_id: data.idCompetitions}).exec(function (err, zawody){
 				console.log('usuwam grp z zawodow: ' + data.idGroup);
 				console.log('zawody przed: ' + zawody.grupy);
-				zawody.grupy = _.without(zawody.grupy, _.findWhere(zawody.grupy, data.idGroup));
+				zawody.grupy = _.without(zawody.grupy, data.idGroup);
 				console.log('zawody po: ' + zawody.grupy);
 				zawody.save(function (err, item) {});
 			});

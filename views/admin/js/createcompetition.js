@@ -14,7 +14,7 @@ var horseLeftSelect = document.getElementById('horseLeftSelectList');
 var horseRightSelect = document.getElementById('horseRightSelectList');
 var fromLeftToRight = document.getElementById('fromLeftToRight');
 var fromRightToLeft = document.getElementById('fromRightToLeft');
-var plecGrupy = document.getElementById('plecGrupy');
+var plecGrupySelect = document.getElementById('plecGrupy');
 	
 	// Wyświetlanie grup
 var showGroupsWindow = document.getElementById('showGroupsWindow');
@@ -53,6 +53,9 @@ var cTable = $('#compTable').DataTable({
 // Wyświetlanie Grup -----------------------------------------------------------------
 showGroupsClose.addEventListener('click', function(){
 	hideAllShowHome();
+	setTimeout(function() {
+		location.reload();
+	},300);
 });
 
 var showGroupsFunc = function(idCompetitions, nameComp){
@@ -65,11 +68,11 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 	socket.on('downloaded groups', function (list) {	
 		
 		console.log('downloadedList: ' + list);
-		console.log('downloadedListgrp: ' + list.grupy);
+		//console.log('downloadedListgrp: ' + list.grupy);
 		console.log('---------------------------------');
 		showGroupsTable.clear();
 		list.grupy.forEach(function (oneGroup) {
-			console.log('one Group: ' + oneGroup.nazwa);
+			//console.log('one Group: ' + oneGroup.nazwa);
 			//console.log('one Groupid: ' + oneGroup._id);
 			//console.log('++++++++++');
 			var data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
@@ -105,14 +108,16 @@ var horsesLeft = [];
 var horsesRight = [];
 var numerStartowy = 1;
 var idCompetitionFromTable;
+var nazwaGrupy = "";
+var plecGrupy = "";
 cancelAddGroup.addEventListener('click', function(){
 	hideAllShowHome();	
 });
 
 addGroupButt.addEventListener('click', function(){
 	hideAllShowHome();
-	var nazwaGrupy = $('#nazwaGrupy').val();
-    var plecGrupy = $('#plecGrupy').val();	
+	 nazwaGrupy = $('#nazwaGrupy').val();
+     plecGrupy = $('#plecGrupy').val();	
 	socket.emit('add group',
 		{
 			nazwa: nazwaGrupy,
@@ -121,13 +126,27 @@ addGroupButt.addEventListener('click', function(){
 	setTimeout(function() {
 	socket.emit('random judges', compId);
 	},200); // <-- opóźnia aby była grupa gdy przyjdzie odp od serv
-		socket.on('group id', function (groupId) {		
+		
+	//error.style.display = 'block';
+	//errorMessage.innerHTML = "id " + horseListId;
+	//var horsesLeft = [];
+	//var horsesRight = [];
+	setTimeout(function() {
+	location.reload();
+	},500);
+});
+
+var loadSocketsOn = function(){
+	//var nazwaGrupy = $('#nazwaGrupy').val();
+    //var plecGrupy = $('#plecGrupy').val();	
+	socket.on('group id', function (groupId) {		
 			socket.on('horseList id', function (horseListId) {
 				socket.emit('add horseElem to group',
 				{
 					groupName: nazwaGrupy,
 					horseElemId: horseListId
-				});			
+				});
+				console.log('add horseElem to group',horseListId);
 			});
 			horsesRight.forEach(function(horse){
 				socket.emit('add horse to list',
@@ -143,6 +162,7 @@ addGroupButt.addEventListener('click', function(){
 					groupName: nazwaGrupy,
 					randomJudgesList: randomJudgesList
 				});
+				console.log('randomJudgesList',randomJudgesList.length);
 			});	
 			setTimeout(function() {
 				socket.emit('add group to comp', 
@@ -150,13 +170,9 @@ addGroupButt.addEventListener('click', function(){
 					groupId: groupId,
 					compId: compId
 				});
-			},1000); // <-- opóźnia aby na końcu dodać
+			},400); // <-- opóźnia aby na końcu dodać
 		});
-	//error.style.display = 'block';
-	//errorMessage.innerHTML = "id " + horseListId;
-	//var horsesLeft = [];
-	//var horsesRight = [];
-});
+};
 
 
 fromLeftToRight.addEventListener('click', function(){
@@ -199,7 +215,7 @@ fromRightToLeft.addEventListener('click', function(){
 		}  
 });
 
-plecGrupy.addEventListener('click', function(){
+plecGrupySelect.addEventListener('click', function(){
 	horsesLeft = [];
 	horsesRight = [];
 	horseLeftSelect.innerHTML = "";
@@ -215,6 +231,7 @@ plecGrupy.addEventListener('click', function(){
 
 var addGroupFunc = function(idCompetition){
 	idCompetitionFromTable = idCompetition;
+	
 	hideAll();
 	addGroup.style.display = 'block';	
 	loadAllHorsesToLeftTable();
@@ -289,6 +306,7 @@ var refreshComp = function(){
                 refreshComp();
             });
 			$('.addgroup-'+list._id).click(function(){
+				console.log('dodajemy grp do list._id',list._id);
 				compId = list._id;
                 addGroupFunc(list._id);
             });
@@ -314,6 +332,7 @@ var hideAllShowHome = function(){
 };
 
 window.onload = function() {
+	loadSocketsOn();
 	hideAllShowHome();
 	refreshComp();
 };	
