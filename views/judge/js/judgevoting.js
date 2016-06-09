@@ -40,29 +40,42 @@ var horseTable = $('#horseTable').DataTable({
 });
 
 // Obsługa Window10 -----------------------------------------------------------------
-/*typeSlider10.addEventListener('input', function () {
-            $('#type10').text($('#typeSlider10').val());
-});*/
 
 $('#typeSlider10').slider({
 	formatter: function(value) {
 		$('#type10').text($('#typeSlider10').val());
-		return 'Current value: ' + value;
+		return 'Aktualna wartość: ' + value;
 	}
 });
 
-headSlider10.addEventListener('input', function () {
-            $('#head10').text($('#headSlider10').val());
+$('#headSlider10').slider({
+	formatter: function(value) {
+		$('#head10').text($('#headSlider10').val());
+		return 'Aktualna wartość: ' + value;
+	}
 });
-klodaSlider10.addEventListener('input', function () {
-            $('#kloda10').text($('#klodaSlider10').val());
+
+$('#klodaSlider10').slider({
+	formatter: function(value) {
+		$('#kloda10').text($('#klodaSlider10').val());
+		return 'Aktualna wartość: ' + value;
+	}
 });
-legsSlider10.addEventListener('input', function () {
-            $('#legs10').text($('#legsSlider10').val());
+
+$('#legsSlider10').slider({
+	formatter: function(value) {
+		$('#legs10').text($('#legsSlider10').val());
+		return 'Aktualna wartość: ' + value;
+	}
 });
-movementSlider10.addEventListener('input', function () {
-            $('#movement10').text($('#movementSlider10').val());
+
+$('#movementSlider10').slider({
+	formatter: function(value) {
+		$('#movement10').text($('#movementSlider10').val());
+		return 'Aktualna wartość: ' + value;
+	}
 });
+
 vote10.addEventListener('click', function(){
 	var ocena = {
 		typ:$('#typeSlider10').val(), 
@@ -78,6 +91,11 @@ vote10.addEventListener('click', function(){
 	console.log('tab horsesToVote[0]: '+ horsesToVote[0].nazwa);
 	hideAllShowVotingWindow();
 });
+$('#type10').text("10");
+$('#head10').text("9");
+$('#kloda10').text("8");
+$('#legs10').text("7");
+$('#movement10').text("6");
 
 // Wejscie sedziego ------------------------------------------------
 //var judgeId = "574984e5068effa002ce5b5fss";
@@ -116,6 +134,7 @@ var loadHorseTable = function(){
                 console.log('voting on: ' + list._id + " , " + list.nazwa);
 				hideAll();
 				Window10.style.display = 'block';
+				$('#horseInfoForVote').text("Koń: " + list.nazwa + ", Hodowca: " + list.hodowca);
 				votingHorseId = list._id;
             });
 		});
