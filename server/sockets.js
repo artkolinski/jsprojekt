@@ -55,6 +55,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		// Sedziowie -------------------------
 		socket.on('judge connected', function (judgeId) { 
 			var objGrupa;
+			checkMaybeIsEnd();
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
@@ -141,8 +142,10 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					console.log('grupa.ocenysedziow: ' + grupa.ocenysedziow);
 					//TODO sprawdzić czy liczbaKoni * liczbaSedziow = liczbaOcen
 					// wtedy mamy koniec zawodów
-				
-					if((liczbaKoni*liczbaSedziow)==liczbaOcen){
+					var stanOcen = liczbaOcen-(liczbaKoni*liczbaSedziow);
+					// jak 0 to all glosowali, - to jeszcze nie
+					if(stanOcen === 0){
+						console.log('weszlo');
 						grupa.listastartowa.forEach(function(elemListy){
 							console.log('elemListy_id: ' + elemListy._id);
 							OcenaSedziego.find({id_horse: elemListy._id}).exec(function (err, listaZGrp) {
@@ -189,14 +192,14 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							sumaRuch = 0;
 						});	
 					}else{
-						console.log('brakuje jeszcze ' + liczbaOcen-(liczbaKoni*liczbaSedziow) + ' ocen');
+						console.log('brakuje jeszcze ' + stanOcen + ' ocen');
+						console.log('brakuje jeszcze nie policzylo');
 					}
 				});
 		};
 		
 		// Widzowie -------------------------
 		socket.on('get votes', function () {
-			checkMaybeIsEnd();
 			refreshVotes(true);
 		});
 		
