@@ -429,14 +429,17 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					dataur: data.dataur,
                     hodowca: data.hodowca
                 });
-                player.save(function (err, item) {
-                    //console.dir(err);
-                    //console.log(item);
-                });
+                player.save(function (err, item) {});
         });
         socket.on('get horses', function () {
             Horse.find({}).exec(function (err, players){
             socket.emit('get horses', players);
+            });
+			//console.log('get horses');
+        });
+		socket.on('get one sex horses', function (sex) { // Klacz, Koń
+            Horse.find({plec:sex}).exec(function (err, players){
+            socket.emit('get one sex horses', players);
             });
 			//console.log('get horses');
         });

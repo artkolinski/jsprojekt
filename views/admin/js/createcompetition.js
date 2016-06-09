@@ -14,6 +14,7 @@ var horseLeftSelect = document.getElementById('horseLeftSelectList');
 var horseRightSelect = document.getElementById('horseRightSelectList');
 var fromLeftToRight = document.getElementById('fromLeftToRight');
 var fromRightToLeft = document.getElementById('fromRightToLeft');
+var plecGrupy = document.getElementById('plecGrupy');
 	
 	// Wyświetlanie grup
 var showGroupsWindow = document.getElementById('showGroupsWindow');
@@ -196,6 +197,20 @@ fromRightToLeft.addEventListener('click', function(){
 		}  
 });
 
+plecGrupy.addEventListener('click', function(){
+	horsesLeft = [];
+	horsesRight = [];
+	horseLeftSelect.innerHTML = "";
+	horseRightSelect.innerHTML = "";
+	numerStartowy = 1;
+	if($('#plecGrupy').val() == "Klacz"){
+		socket.emit('get one sex horses', "Klacz");
+	}else{
+		socket.emit('get one sex horses', "Koń");
+	}
+
+});
+
 var addGroupFunc = function(idCompetition){
 	idCompetitionFromTable = idCompetition;
 	hideAll();
@@ -212,8 +227,8 @@ var loadLeftOptions = function(){
 };
 
 var loadAllHorsesToLeftTable = function(){
-	socket.emit('get horses');
-    socket.on('get horses', function (horses) {		
+	socket.emit('get one sex horses', "Koń");
+    socket.on('get one sex horses', function (horses) {		
 		horsesLeft = [];
         horses.forEach(function (horse) {
             var oneHorse = {id:horse._id, nazwa:horse.nazwa, hodowca:horse.hodowca};
