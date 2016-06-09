@@ -387,6 +387,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							if (err) console.log(err);		  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
+								console.log('grupa.sedziowie',grupa.sedziowie);
+								console.log('randJudge._id',randJudge._id);
 							  if(contains.call(grupa.sedziowie,randJudge._id)){
 								 console.log('juz mamy takiego randomJudg');
 								 }else{
@@ -408,17 +410,37 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					}
 				});
         });	
-		//TODO usuwanie grupy
-		/*
-		socket.on('remove group from comp', function (data) {
-            console.log('remove group: ' + data.idGrp);
-			Zawody.findOne({_id: data.compId}).exec(function (err, zawody){
-				_.without(zawody.grupy, _.findWhere(zawody.grupy, data.idGrp));
-			});
-            //Grupa.find({ _id: data.id }).remove().exec();
-        });
+
 		var _ = require('underscore');
-		*/
+		socket.on('remove group from comp', function (data) { // idCompetitions, idGroup
+            console.log('idCompetitions: ' + data.idCompetitions);
+			console.log('idGroup: ' + data.idGroup);
+			// usunięcie id grupy z zawodów
+			Zawody.findOne({_id: data.idCompetitions}).exec(function (err, zawody){
+				console.log('usuwam grp z zawodow: ' + data.idGroup);
+				console.log('zawody przed: ' + zawody.grupy);
+				zawody.grupy = _.without(zawody.grupy, _.findWhere(zawody.grupy, data.idGroup));
+				console.log('zawody po: ' + zawody.grupy);
+				zawody.save(function (err, item) {});
+			});
+			/*Grupa
+				.findOne({ _id: data.idGroup })
+				//.populate('listastartowa') // <--
+				.exec(function (err, grupa) {
+					// usunięcie listy startowej po liscie z grupy
+					grupa.listastartowa.forEach(function(elemListyStart){  // < -- kazdy elementListy
+						console.log('usuwam elem: ' + elemListyStart);
+						Element.find({ _id: elemListyStart }).remove().exec();
+					});
+			});*/
+			console.log('usuwam liste: ' + data.idGroup);
+			Element.find({ id_grupa: data.idGroup }).remove().exec();
+			// usunięcie grupy o takim id
+			console.log('usuwam grp: ' + data.idGroup);
+            Grupa.findOne({ _id: data.idGroup }).remove().exec();
+        });
+		
+		
         // Horses -------------------------       
         socket.on('add horse', function(data){
             console.log('add horse');

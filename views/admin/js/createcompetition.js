@@ -79,14 +79,14 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			$('.start-'+oneGroup._id).click(function(){
                 startGroupFunc(oneGroup._id, idCompetitions, nameComp);
             });			
-			/* TODO Usuwanie pojedynczej grupy z zawodów
+			///* TODO Usuwanie pojedynczej grupy z zawodów
 			$('.delete-'+oneGroup._id).click(function(){
-                console.log('remove group: ' + list._id);
-                socket.emit('remove group from comp', { idGrp: oneGroup._id, compId: compId });
-				//oTable.fnDeleteRow(oTable.fnGetPosition(selected_tr));		//showGroupsTable.fnDeleteRow(showGroupsTable.fnGetPosition($('tr[name=docId]')));
-				
+				socket.emit('remove group from comp', {idCompetitions: idCompetitions, idGroup: oneGroup._id});
+				setTimeout(function() {
+					socket.emit('get groups',data);
+				},100);
             });
-			*/
+			//*/
 		});
 	});
 };
@@ -110,6 +110,7 @@ cancelAddGroup.addEventListener('click', function(){
 });
 
 addGroupButt.addEventListener('click', function(){
+	hideAllShowHome();
 	var nazwaGrupy = $('#nazwaGrupy').val();
     var plecGrupy = $('#plecGrupy').val();	
 	socket.emit('add group',
@@ -153,7 +154,8 @@ addGroupButt.addEventListener('click', function(){
 		});
 	//error.style.display = 'block';
 	//errorMessage.innerHTML = "id " + horseListId;
-	hideAllShowHome();	
+	//var horsesLeft = [];
+	//var horsesRight = [];
 });
 
 
