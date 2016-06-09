@@ -2,14 +2,21 @@
 <html>
 <head>
     <title>Głosowanie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-slider.css">
+    
 </head>
 <body>
    <div id="wrapper">
       <% include sidebar %>
       <div id="page-content-wrapper">
+             <div class="page-content inset">
+             	<a id="menu-toggle" href="/" class="btn btn-default">Strona główna</a>
+				<a id="menu-toggle" href="/judge/judgevoting" class="btn btn-default">Głosowanie</a>
+				<a id="menu-toggle" href="/logout" class="btn btn-default">Logout</a>
               <div id="votingContainer">
 				<div id="infoWindow">
                    	   <p class="lead">Informacje</p>
@@ -23,7 +30,7 @@
 							<p class="lead">Głosowanie 1-10</p>
 					</div>
                 	Typ: <div id="type10">6</div>
-                	<input id="typeSlider10" type="range" min="1" max="10">
+                	<input id="typeSlider10" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="10" data-slider-step="1" data-slider-value="6"/>	
                 	
                 	Głowa i szyja: <div id="head10">6</div>
                 	<input id="headSlider10" type="range" min="1" max="10">
@@ -48,10 +55,12 @@
                 	205
                 </div> 
 				<div id="votingWindow">
-					<div class="page-content inset">
+					
 						<div class="col-md-12">
 							<p class="lead">Konie</p>
-						<table id="horseTable" class="display" cellspacing="0" width="100%">
+						</div>
+
+						<table id="horseTable" class="display">
                            <thead>
                                 <tr>
 									<th>Nazwa</th><th>Dataur</th><th>Hodowca</th><th>Oceń</th>
@@ -61,7 +70,7 @@
 
                            </tfoot>
                         </table>
-						</div>
+						
 						<% if (login) { %>
 						  <p>Jesteś zalogowany jako: </br>
 							Login : <%= user.username %></br>
@@ -73,6 +82,7 @@
 						<% } %>	
 					</div>  
 					<script src="js/jquery-1.12.3.min.js"></script> 
+					<script src="js/bootstrap-slider.js"></script>
 					<script src="js/jquery.dataTables.min.js"></script>
 					<script src="js/socket.io.js"></script>
 					<script src="js/judgevoting.js"></script>     

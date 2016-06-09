@@ -3,7 +3,7 @@ body {
   background: lightgrey;
 }
 #spectatorContainer {
-  width: 800px;
+  max-width: 900px;
 }
 .paging-nav {
   justify-content: center;

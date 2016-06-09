@@ -40,8 +40,15 @@ var horseTable = $('#horseTable').DataTable({
 });
 
 // Obsługa Window10 -----------------------------------------------------------------
-typeSlider10.addEventListener('input', function () {
+/*typeSlider10.addEventListener('input', function () {
             $('#type10').text($('#typeSlider10').val());
+});*/
+
+$('#typeSlider10').slider({
+	formatter: function(value) {
+		$('#type10').text($('#typeSlider10').val());
+		return 'Current value: ' + value;
+	}
 });
 
 headSlider10.addEventListener('input', function () {

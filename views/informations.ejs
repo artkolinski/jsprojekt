@@ -3,6 +3,7 @@
   <head>
     <title>Informacje</title>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
     <link href="/css/main.css" rel="stylesheet" media="screen"/>
     <link href="/css/font-awesome.min.css" rel="stylesheet" media="screen"/>
@@ -15,7 +16,8 @@
       <% include sidebar %>
       <div id="page-content-wrapper">
 		  <div class="page-content inset">
-			<div class="row"><a id="menu-toggle" href="#" class="btn btn-default"><i class="fa fa-bars"></i></a>
+			<div class="row">
+		  	  <% include menu-toggle %>
 			  <div class="col-md-12">
 				<h1>Informacje</h1>
 				<p class="lead">Tutaj znajdziesz podstawowe informacje dotyczące przeprowadzanych zawodów.</p>

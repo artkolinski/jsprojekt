@@ -3,7 +3,11 @@ body {
   background: lightgrey;
 }
 #votingContainer {
-  width: 600px;
+  max-width: 700px;
+}
+#ex1Slider {
+  width: 100%;
+  max-width: 700px;
 }
 .paging-nav {
   justify-content: center;
