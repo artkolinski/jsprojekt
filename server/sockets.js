@@ -70,27 +70,43 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							//console.log('sedzia._id ' + sedzia);
 							//console.log('judgeId ' + judgeId);
 								if(sedzia == judgeId){
+									
 									setTimeout(function() {
-									socket.emit('judge connected', objGrupa);
-								},300);
-							}	
+										socket.emit('judge connected', objGrupa);
+									},300);
+								}	
 						});
 					}
 				});	
 		});
-		socket.on('get horse table', function (listastartowa) {
+		socket.on('get horse table', function (data) { //horseTable, judgeId
 			var horseTable = [];
-			listastartowa.forEach(function(elem){
-				console.log('get horse table horseId: ' + elem.id_horse);
+			var votedHorses = [];
+			data.horseTable.forEach(function(elem){
+				//console.log('get horse table horseId: ' + elem.id_horse);
 				Horse
 					.findOne({ _id: elem.id_horse})
 					.exec(function (err, horse) {	
-						console.log('get horse table one: ' + horse);
+						//console.log('get horse table one: ' + horse);
 						horseTable.push(horse);
 					});
 				});
 			setTimeout(function() {
-				socket.emit('get horse table', horseTable);
+				//console.log('data.judgeId: ' + data.judgeId);
+				OcenaSedziego.find({id_sedzia:data.judgeId}).exec(function (err, oceny){
+					//console.log('oceny: ' + oceny);
+					if(oceny !== undefined){
+						//console.log('2oceny: ' + oceny);
+						oceny.forEach(function(ocena){
+							//console.log('ocena: ' + ocena.id_horse);
+							votedHorses.push(ocena.id_horse);
+						});
+					}
+				});
+				setTimeout(function() {
+				console.log('votedHorses: ' + votedHorses);
+				socket.emit('get horse table', {horseTable:horseTable, votedHorses:votedHorses});
+				},50);
 			},300);
 		}); 
 		socket.on('create ocena_sedziego', function (data) {
@@ -126,7 +142,12 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
-				.exec(function (err, grupa) {	
+				.exec(function (err, grupa) {
+					if(grupa === null){
+						console.log('check brak aktywnej grp ');
+					}else{
+						
+						console.log('check grupa: ' + grupa);	
 					var liczbaSedziow = grupa.sedziowie.length;
 					var liczbaKoni = grupa.listastartowa.length;
 					var liczbaOcen = grupa.ocenysedziow.length;
@@ -160,12 +181,12 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 											sumaKloda += oneRating.kloda;
 											sumaNogi += oneRating.nogi;
 											sumaRuch += oneRating.ruch;
-											console.log('Jedna: '+ sumaTyp + ', '+ sumaGlowa + ', '+ sumaKloda + ', ');
+											//console.log('Jedna: '+ sumaTyp + ', '+ sumaGlowa + ', '+ sumaKloda + ', ');
 										});
 									});
 									setTimeout(function() {
 										//socket.emit('get horse table', horseTable);
-
+											console.log('Typsuma: '+ sumaTyp + ', sedziowie:' + liczbaSedziow);
 											sumaTyp = sumaTyp/liczbaSedziow;
 											sumaGlowa = sumaGlowa/liczbaSedziow;
 											sumaKloda = sumaKloda/liczbaSedziow;
@@ -194,18 +215,27 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 											console.log('po dodaniu oceny: ' + elementRated.id_ocena);
 											elementRated.save(function (err, item) {});
 										});
-									},300);
+									},50);
 							});
 							sumaTyp = 0;
 							sumaGlowa = 0;
 							sumaKloda = 0;
 							sumaNogi = 0;
 							sumaRuch = 0;
+							// Wyłączenie grupy -------------------------------------------
+							grupa.aktywna = false;
+							grupa.oceniona = true;
+							grupa.save(function (err, item) {});
+							setTimeout(function() { // czyszczenie ocen sedziow
+								 console.log('remove ratings from grp: ' + grupa._id);
+								 OcenaSedziego.find({}).remove().exec();
+							},1000);
+							// <--- Tu emit nowego rankingu grupy
 						});	
 					}else{
-						
-						console.log('brakuje jeszcze nie policzylo');
+						console.log('brakuje jeszcze glosow');
 					}
+			      }// koniec ifa
 				});
 		};
 		
@@ -219,7 +249,11 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
-				.exec(function (err, grupa) {	
+				.exec(function (err, grupa) {
+					if (grupa === null){
+						console.log('nie ma aktywnej grp');
+					}else{
+						console.log('grupa = ' + grupa);
 					var liczbaSedziow = grupa.sedziowie.length;
 					var liczbaKoni = grupa.listastartowa.length;
 					var liczbaOcen = grupa.ocenysedziow.length;
@@ -298,6 +332,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							socket.broadcast.emit('refresh votes',tabelaWynikow);
 						}	
 					},200);
+				   } // end if
 				});
 		};
 		

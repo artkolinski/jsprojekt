@@ -90,7 +90,11 @@ vote10.addEventListener('click', function(){
 	console.log('tab horsesToVote[0]: '+ horsesToVote[0]._id);
 	console.log('tab horsesToVote[0]: '+ horsesToVote[0].nazwa);
 	hideAllShowVotingWindow();
+	setTimeout(function() {
+		location.reload();
+	},250);
 });
+
 $('#type10').text("10");
 $('#head10').text("9");
 $('#kloda10').text("8");
@@ -102,7 +106,7 @@ $('#movement10').text("6");
 var judgeId = "";
 var connected = false;
 var votingHorseId = "";
-var horsesToVote;
+var horsesToVote = [];
 
 var searchHorsesToVote = function(){
 	socket.emit('judge connected', judgeId);
@@ -111,12 +115,30 @@ var searchHorsesToVote = function(){
 		socket.on('judge connected', function(objGrupa){
 			console.log('nazwa: '+objGrupa.nazwa);
 			console.log('kon1: '+objGrupa.listastartowa[0].id_horse);
-			socket.emit('get horse table', objGrupa.listastartowa);
+			var data = {horseTable:objGrupa.listastartowa, judgeId:judgeId};
+			socket.emit('get horse table', data);
 			//var connected = true;
 		});
 		setTimeout(function() {
-			socket.on('get horse table', function(horseTable){
-				horsesToVote = horseTable;
+			
+			socket.on('get horse table', function(data){ //horseTable,votedHorses - sameID
+				data.horseTable.forEach(function(oneHorse){
+					var add = true;
+					if(data.votedHorses !== undefined){
+						data.votedHorses.forEach(function(oneVote){
+							console.log('oneHorse._id '+oneHorse._id);
+							console.log('oneVote '+oneVote);
+							if(oneHorse._id == oneVote){
+								add = false; 
+							}
+						});
+					}
+					if(add === true){
+						horsesToVote.push(oneHorse);
+					}
+				});
+				
+				//horsesToVote = horseTable;
 				setTimeout(function() {
 					loadHorseTable();
 				},300);
