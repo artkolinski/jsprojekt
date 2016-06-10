@@ -171,8 +171,14 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 						
 						grupa.listastartowa.forEach(function(elemListy){
 							console.log('1. elemListy_id: ' + elemListy.id_horse);
+							setTimeout(function() {
 							OcenaSedziego.find({id_horse: elemListy.id_horse}).exec(function (err, listaZGrp) {
 								console.log('2. listaZGrp: ' + listaZGrp);
+											sumaTyp = 0;
+											sumaGlowa = 0;
+											sumaKloda = 0;
+											sumaNogi = 0;
+											sumaRuch = 0;
 									listaZGrp.forEach(function(oneHorseRatings){
 										console.log('3. oneHorseRatings: ' + oneHorseRatings);
 										Ocena.findOne({_id:oneHorseRatings.id_ocena}).exec(function (err, oneRating){
@@ -181,7 +187,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 											sumaKloda += oneRating.kloda;
 											sumaNogi += oneRating.nogi;
 											sumaRuch += oneRating.ruch;
-											//console.log('Jedna: '+ sumaTyp + ', '+ sumaGlowa + ', '+ sumaKloda + ', ');
+											console.log('Jedna: '+ sumaTyp + ', '+ sumaGlowa + ', '+ sumaKloda + ', ');
 										});
 									});
 									setTimeout(function() {
@@ -204,6 +210,13 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 											nogi: sumaNogi,
 											ruch: sumaRuch
 										});
+										setTimeout(function() {
+											sumaTyp = 0;
+											sumaGlowa = 0;
+											sumaKloda = 0;
+											sumaNogi = 0;
+											sumaRuch = 0;
+										},20);
 										console.log('new Ocena: ' + newOcena);
 										newOcena.save(function (err, item) {});
 											// wstawic to do elem listy start
@@ -217,11 +230,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 										});
 									},50);
 							});
-							sumaTyp = 0;
-							sumaGlowa = 0;
-							sumaKloda = 0;
-							sumaNogi = 0;
-							sumaRuch = 0;
+							},30);
+							
 							// Wyłączenie grupy -------------------------------------------
 							grupa.aktywna = false;
 							grupa.oceniona = true;
