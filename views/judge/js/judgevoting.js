@@ -112,7 +112,6 @@ var horsesToVote = [];
 
 var searchHorsesToVote = function(){
 	socket.on('fastReminder', function(reminderIdJudge){
-		//console.log('fastReminder for ' + reminderIdJudge);
 		if(reminderIdJudge == judgeId){
 			console.log('fastReminder Activate');
 			fastReminder.style.display = 'block';
@@ -122,8 +121,6 @@ var searchHorsesToVote = function(){
 	console.log('idSedziego:' + judgeId);
 	if(connected === false){
 		socket.on('judge connected', function(objGrupa){
-			console.log('nazwa: '+objGrupa.nazwa);
-			console.log('kon1: '+objGrupa.listastartowa[0].id_horse);
 			var data = {horseTable:objGrupa.listastartowa, judgeId:judgeId};
 			socket.emit('get horse table', data);
 			//var connected = true;
@@ -135,8 +132,6 @@ var searchHorsesToVote = function(){
 					var add = true;
 					if(data.votedHorses !== undefined){
 						data.votedHorses.forEach(function(oneVote){
-							console.log('oneHorse._id '+oneHorse._id);
-							console.log('oneVote '+oneVote);
 							if(oneHorse._id == oneVote){
 								add = false; 
 							}
@@ -146,8 +141,7 @@ var searchHorsesToVote = function(){
 						horsesToVote.push(oneHorse);
 					}
 				});
-				
-				//horsesToVote = horseTable;
+
 				setTimeout(function() {
 					loadHorseTable();
 				},300);
@@ -186,14 +180,10 @@ var hideAll = function(){
 var hideAllShowVotingWindow = function(){
 	hideAll();
 	votingWindow.style.display = 'block';
-	//Window10.style.display = 'block';
-	//infoWindow.style.display = 'block';
-	// $('#infoMessage').text($('#idJudge').val()); // Pobieramy ID sędziego
 	judgeId = $('#idJudge').val();
 };
 
 window.onload = function() {
 	hideAllShowVotingWindow();
 	searchHorsesToVote();
-	//refreshComp();
 };	

@@ -45,11 +45,11 @@ module.exports = function (app, passport, Account, role) {
      });
 	
 	// Widzowie ------------------------------------
-	/*
-	app.get('/spectators', function (req, res) {
-        res.render('spectators');
+	
+	app.get('/ranking', function (req, res) {
+        res.render('ranking');
     });
-	*/
+	
 	
 	// Register backdoor ---------------------------
 	app.get('/register/backdoor', function(req, res) {

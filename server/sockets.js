@@ -257,11 +257,68 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				});
 		};
 		
+		// Ranking dla widzow -------------------------
+		socket.on('get ranking', function () {
+			refreshRanking(true);
+		});
+		var refreshRanking = function(spectatorEnter){ // true = podlaczanie klienta, false = do wszyst	
+			var horseList = [];
+			Zawody
+			 .findOne({ zakonczone: false })
+			 .populate('grupy')
+			 .exec(function (err, zawody) {
+				//console.log('zawody:' + zawody);
+				//console.log('zawody.grupy:' + zawody.grupy);
+				//console.log('zawody.grupy.listastartowa:' + zawody.grupy.listastartowa);
+				
+				zawody.grupy.forEach(function(grupa){
+					console.log('grupa:' + grupa);
+					Grupa
+					 .findOne({ _id: grupa._id })
+					 .exec(function (err, grupa) {
+						grupa.listastartowa.forEach(function(elementListy){
+							console.log('elementListy:' + elementListy);
+							Element
+							 .findOne({ _id: elementListy })
+							 .populate('id_ocena')
+							 .exec(function (err, element) {
+								console.log('element:' + element);
+								if(element.id_ocena === null){
+									console.log('brak oceny');
+								}else{
+									Element
+									 .findOne({ _id: elementListy })
+									 .populate('id_horse')
+									 .exec(function (err, element2) {
+									console.log('element2:' + element2);
+									  var data = {
+										typ: element.id_ocena.typ, 
+										glowa: element.id_ocena.glowa,
+										kloda: element.id_ocena.kloda,
+										nogi: element.id_ocena.nogi,
+										ruch: element.id_ocena.ruch,
+										nazwaKonia: element2.id_horse.nazwa};
+										horseList.push(data);
+									});
+								}
+							});
+						});
+					});
+				});
+			});
+			setTimeout(function() {
+				if(spectatorEnter === true){
+					socket.emit('get ranking', horseList);
+				}else{
+					socket.broadcast.emit('get ranking', horseList);
+				}
+			},300);
+		};
+		
 		// Podgląd głosów dla admina -------------------------
 		socket.on('get votes', function () {
 			refreshVotes(true);
 		});
-		
 		var refreshVotes = function(spectatorEnter){ // true, false
 			console.log('refreshVotes <-------------------------');
 			Grupa
@@ -466,12 +523,6 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							if (err) console.log(err);		  
 							Grupa.findOne({nazwa: data.groupName}).exec(function (err, grupa){
 							  if (err) console.log(err);
-								//console.log('grupa.sedziowie',grupa.sedziowie);
-								//console.log('randJudge._id',randJudge._id);
-								//function findById(id) {
-								//  return _.contains(_.pluck(grupa.sedziowie, '_id'), randJudge._id);
-							//	}
-							  //if(contains.call(grupa.sedziowie,randJudge._id)){
 							    if(_.contains(_.pluck(grupa.sedziowie, '_id'), randJudge._id)){
 								 console.log('juz mamy takiego randomJudg');
 								 }else{
