@@ -28,6 +28,15 @@ var showGroupsTable = $('#showGroupsTable').DataTable({
         }       
     }
 });
+var showGroupJudges = $('#showGroupJudges').DataTable({
+    "iDisplayLength": -1,
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+});
+
+var showGroupHorses = $('#showGroupHorses').DataTable({
+    "iDisplayLength": -1,
+    "aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]]
+});
 
 // Błędy -----------------------------------------------------------------
 var error = document.getElementById('errorWindow');
@@ -77,9 +86,9 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			//console.log('++++++++++');
 			var data = [];
 			if(oneGroup.aktywna === true || oneGroup.oceniona === true){
-				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona,'','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona,'','<button class="showOneGroup-' + oneGroup._id + '">Pokaż</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
 			}else{
-				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="showOneGroup-' + oneGroup._id + '">Pokaż</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
 			}
 			data.id = oneGroup._id;
             showGroupsTable.row.add(data).draw();
@@ -87,7 +96,10 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			$('.start-'+oneGroup._id).click(function(){
                 startGroupFunc(oneGroup._id, idCompetitions, nameComp);
             });			
-			///* TODO Usuwanie pojedynczej grupy z zawodów
+			$('.showOneGroup-'+oneGroup._id).click(function(){
+				socket.emit('get horses and judges from group', oneGroup._id);
+				showOneGroup();
+            });
 			$('.delete-'+oneGroup._id).click(function(){
 				socket.emit('remove group from comp', {idCompetitions: idCompetitions, idGroup: oneGroup._id});
 				setTimeout(function() {
@@ -95,6 +107,21 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 				},100);
             });
 			//*/
+		});
+	});
+};
+
+var showOneGroup = function(){
+	socket.on('get horses and judges from group', function (data) { // judgesList, horsesList
+		showGroupJudges.clear();
+		data.judgesList.forEach(function (oneJudge) {
+			var data1 =[ oneJudge.username, oneJudge.imie, oneJudge.nazwisko];
+			showGroupJudges.row.add(data1).draw();
+		});
+		showGroupHorses.clear();
+		data.horsesList.forEach(function (oneHorse) {
+			var data2 =[ oneHorse.nazwa, oneHorse.plec, oneHorse.dataur, oneHorse.hodowca];
+			showGroupHorses.row.add(data2).draw();
 		});
 	});
 };

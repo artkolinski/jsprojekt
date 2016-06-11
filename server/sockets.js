@@ -362,6 +362,35 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			},300);
 		});
 		
+		socket.on('get horses and judges from group', function (idGroup) {
+			var judgesList = [];
+			var horsesList = [];
+			Grupa
+				.findOne({ _id: idGroup })
+				.populate('sedziowie')
+				.exec(function (err, grupa) {
+					console.log('sedziowie' + grupa.sedziowie);
+					judgesList = grupa.sedziowie;
+			});
+			Grupa
+				.findOne({ _id: idGroup })
+				.populate('listastartowa')
+				.exec(function (err, grupa) {
+					console.log('listastartowa' + grupa.listastartowa);
+					grupa.listastartowa.forEach(function(oneElement){
+						console.log('oneElement' + oneElement.id_horse);
+						Horse
+							.findOne({ _id: oneElement.id_horse })
+							.exec(function (err, oneHorse) {
+							horsesList.push(oneHorse);
+						});
+					});
+			});
+			setTimeout(function() {
+				socket.emit('get horses and judges from group',{judgesList: judgesList, horsesList: horsesList});
+			},300);
+		});
+		
 		var contains = function(needle) {
 				var findNaN = needle !== needle;
 				var indexOf;
