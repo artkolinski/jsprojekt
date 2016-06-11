@@ -21,10 +21,12 @@ var klodaSlider10 = document.getElementById('klodaSlider10');
 var legsSlider10 = document.getElementById('legsSlider10');
 var movementSlider10 = document.getElementById('movementSlider10');
 var vote10 = document.getElementById('vote10');
+var judgeID = document.getElementById('judgeID');
 //var  = document.getElementById('');
 
 // Glowne okno -----------------------------------------------------------------
 var votingWindow = document.getElementById('votingWindow');
+var fastReminder = document.getElementById('fastReminder');
 var horseTable = $('#horseTable').DataTable({
     "columnDefs": [ {
     "targets": [3],
@@ -109,6 +111,13 @@ var votingHorseId = "";
 var horsesToVote = [];
 
 var searchHorsesToVote = function(){
+	socket.on('fastReminder', function(reminderIdJudge){
+		console.log('fastReminder for ' + reminderIdJudge);
+		if(reminderIdJudge == judgeId){
+			console.log('fastReminder IN ');
+			fastReminder.style.display = 'block';
+		}
+	});		  
 	socket.emit('judge connected', judgeId);
 	console.log('idSedziego:' + judgeId);
 	if(connected === false){
@@ -170,6 +179,8 @@ var hideAll = function(){
 	Window20.style.display = 'none';
 	Window205.style.display = 'none';
 	votingWindow.style.display = 'none';
+	judgeID.style.display = 'none';
+	fastReminder.style.display = 'none';
 };
 
 var hideAllShowVotingWindow = function(){

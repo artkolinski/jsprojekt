@@ -115,8 +115,11 @@ var showOneGroup = function(){
 	socket.on('get horses and judges from group', function (data) { // judgesList, horsesList
 		showGroupJudges.clear();
 		data.judgesList.forEach(function (oneJudge) {
-			var data1 =[ oneJudge.username, oneJudge.imie, oneJudge.nazwisko];
+			var data1 =[ oneJudge.username, oneJudge.imie, oneJudge.nazwisko,'<button class="fastReminder-' + oneJudge._id + '">Wyślij</button>'];
 			showGroupJudges.row.add(data1).draw();
+			$('.fastReminder-'+oneJudge._id).click(function(){
+				socket.emit('fastReminder', oneJudge._id);
+            });
 		});
 		showGroupHorses.clear();
 		data.horsesList.forEach(function (oneHorse) {

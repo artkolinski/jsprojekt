@@ -53,6 +53,11 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		});
 		
 		// Sedziowie -------------------------
+		socket.on('fastReminder', function (judgeId) {
+			console.log('fastReminder for ' + judgeId);
+			socket.broadcast.emit('fastReminder', judgeId);
+		});
+		
 		socket.on('judge connected', function (judgeId) { 
 			var objGrupa;
 			checkMaybeIsEnd();
@@ -369,16 +374,13 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				.findOne({ _id: idGroup })
 				.populate('sedziowie')
 				.exec(function (err, grupa) {
-					console.log('sedziowie' + grupa.sedziowie);
 					judgesList = grupa.sedziowie;
 			});
 			Grupa
 				.findOne({ _id: idGroup })
 				.populate('listastartowa')
 				.exec(function (err, grupa) {
-					console.log('listastartowa' + grupa.listastartowa);
 					grupa.listastartowa.forEach(function(oneElement){
-						console.log('oneElement' + oneElement.id_horse);
 						Horse
 							.findOne({ _id: oneElement.id_horse })
 							.exec(function (err, oneHorse) {

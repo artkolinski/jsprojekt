@@ -7,6 +7,10 @@ module.exports = function (app, passport, Account, role) {
         res.render('admin/horses');
     });
 	
+	app.get('/admin/spectators', function (req, res) {
+        res.render('admin/spectators');
+    });
+	
     //app.get('/admin/accounts', role.can('access admin pages'), function (req, res) {
     app.get('/admin/accounts', function (req, res) {
         res.render('admin/accounts');

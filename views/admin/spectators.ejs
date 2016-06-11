@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+    <title>Widzowie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" media="screen">
+</head>
+<body>
+   <div id="wrapper">
+      <% include sidebar %>
+      <div id="page-content-wrapper">
+             <div class="page-content inset">
+              <div id="spectatorContainer">
+				<div id="spectatorWindow">
+					 <div class="row">
+					 <% include menu-toggle %>
+						<div class="col-md-12">
+							<p class="lead">Konie - Oceny</p>
+							<table id="votesTable" class="display">
+						<!--<table id="votesTable" class="display" cellspacing="0" width="100%">-->
+                           <thead>
+                                <tr>
+									<th>Nazwa Konia</th><th>Nazwisko sedziego</th><th>Typ</th><th>Głowa i szyja</th><th>Kłoda</th><th>Nogi</th><th>Ruch</th>
+                                </tr>                    
+                           </thead>
+                           <tfoot>
+
+                           </tfoot>
+                        </table>
+						</div>
+
+					</div>  
+					<script src="js/jquery-1.12.3.min.js"></script> 
+					<script src="js/jquery.dataTables.min.js"></script>
+					<script src="js/socket.io.js"></script>
+					<script src="js/spectators.js"></script>   
+                 </div>
+               </div> 
+          </div>
+       </div>  
+    </div>
+</body>
+</html>

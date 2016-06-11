@@ -61,7 +61,9 @@
 						<div class="col-md-12">
 							<p class="lead">Konie</p>
 						</div>
-
+						<div id="fastReminder">
+							<p class="lead">Proszę o szybsze głosowanie, Administrator :)</p>
+						</div>
 						<table id="horseTable" class="display">
                            <thead>
                                 <tr>
@@ -78,9 +80,10 @@
 							Login : <%= user.username %></br>
 							Imie : <%= user.imie %></br>
 							Nazwisko : <%= user.nazwisko %></br>
-							Masz uprawnienia : <b><%= user.role %></b><br/>
-							Twoje ID: <input id="idJudge" value="<%= user._id %>"/>
-							
+							Twoje uprawnienia : <b><%= user.role %></b><br/>
+							<div id="judgeID">
+								Twoje ID: <input id="idJudge" value="<%= user._id %>"/>
+							</div>
 						<% } %>	
 					</div>  
 					<script src="js/jquery-1.12.3.min.js"></script> 
