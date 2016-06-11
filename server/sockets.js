@@ -247,8 +247,8 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							setTimeout(function() { // czyszczenie ocen sedziow
 								 console.log('remove ratings from grp: ' + grupa._id);
 								 OcenaSedziego.find({}).remove().exec();
+								 refreshRanking(false);
 							},1000);
-							// <--- Tu emit nowego rankingu grupy
 						});	
 					}else{
 						console.log('brakuje jeszcze glosow');
@@ -267,22 +267,18 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 			 .findOne({ zakonczone: false })
 			 .populate('grupy')
 			 .exec(function (err, zawody) {
-				//console.log('zawody:' + zawody);
-				//console.log('zawody.grupy:' + zawody.grupy);
-				//console.log('zawody.grupy.listastartowa:' + zawody.grupy.listastartowa);
-				
 				zawody.grupy.forEach(function(grupa){
-					console.log('grupa:' + grupa);
+					//console.log('grupa:' + grupa);
 					Grupa
 					 .findOne({ _id: grupa._id })
 					 .exec(function (err, grupa) {
 						grupa.listastartowa.forEach(function(elementListy){
-							console.log('elementListy:' + elementListy);
+							//console.log('elementListy:' + elementListy);
 							Element
 							 .findOne({ _id: elementListy })
 							 .populate('id_ocena')
 							 .exec(function (err, element) {
-								console.log('element:' + element);
+								//console.log('element:' + element);
 								if(element.id_ocena === null){
 									console.log('brak oceny');
 								}else{
@@ -290,7 +286,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 									 .findOne({ _id: elementListy })
 									 .populate('id_horse')
 									 .exec(function (err, element2) {
-									console.log('element2:' + element2);
+									//console.log('element2:' + element2);
 									  var data = {
 										typ: element.id_ocena.typ, 
 										glowa: element.id_ocena.glowa,
