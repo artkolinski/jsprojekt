@@ -332,9 +332,29 @@ var refreshComp = function(){
 	socket.on('get competitions', function (list) {
 		cTable.clear();
 		list.forEach(function (list) {
-            var data =[ list.nazwa, list.ocena, list.liczbasedziow,' ',' ','<button class="delete-' + list._id + '">Usuń</button>','<button class="groups-' + list._id + '">Grupy</button>','<button class="addgroup-' + list._id + '">Dodaj Grupe</button>'];
+			var data = [];
+			if(list.aktywne === false && list.zakonczone === false){
+				data =[ list.nazwa, list.ocena, list.liczbasedziow,list.aktywne,list.zakonczone,'<button class="start-' + list._id + '">Start</button>',' ','<button class="delete-' + list._id + '">Usuń</button>','<button class="groups-' + list._id + '">Grupy</button>','<button class="addgroup-' + list._id + '">Dodaj Grupe</button>'];
+			}else{
+				if(list.aktywne === true){
+					data =[ list.nazwa, list.ocena, list.liczbasedziow,list.aktywne,list.zakonczone,' ','<button class="stop-' + list._id + '">Koniec</button>','<button class="delete-' + list._id + '">Usuń</button>','<button class="groups-' + list._id + '">Grupy</button>',' '];
+				}else{
+					data =[ list.nazwa, list.ocena, list.liczbasedziow,list.aktywne,list.zakonczone,' ',' ','<button class="delete-' + list._id + '">Usuń</button>','<button class="groups-' + list._id + '">Grupy</button>',' '];
+				}
+			}
+			
 			data.id = list._id;
             cTable.row.add(data).draw();
+			$('.start-'+list._id).click(function(){
+                console.log('start comp: ' + list._id);
+                socket.emit('start comp', list._id);
+				refreshComp();
+            });
+			$('.stop-'+list._id).click(function(){
+                console.log('stop comp: ' + list._id);
+                socket.emit('stop comp', list._id);
+				refreshComp();
+            });
 			$('.delete-'+list._id).click(function(){
                 console.log('remove competition: ' + list._id);
                 socket.emit('remove competition', { id: list._id });

@@ -1,11 +1,6 @@
 /*jshint node: true */
 module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedziego, Zawody) {
     io.on('connection', function(socket){
-        /*console.log('new user connected');
-        socket.on('user connected', function(nick){
-            socket.username = nick;
-            socket.emit('user connected');
-        });*/
         // CRUD Competition -------------------------
 		socket.on('add competition', function(data){
             var compModel = Zawody;
@@ -27,6 +22,22 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 				console.log('get competitions',list);
             });
         });
+		
+		socket.on('start comp', function (compId) {
+			Zawody.findOne({ _id: compId}).exec(function (err, zawody){
+				zawody.aktywne = true;
+				Zawody.update({_id: compId}, zawody, function(err, numberAffected, rawResponse) {});
+            });
+        });
+		
+		socket.on('stop comp', function (compId) {
+			Zawody.findOne({ _id: compId}).exec(function (err, zawody){
+				zawody.aktywne = false;
+				zawody.zakonczone = true;
+				Zawody.update({_id: compId}, zawody, function(err, numberAffected, rawResponse) {});
+            });
+        });
+		
 		socket.on('remove competition', function (data) {
             console.log('remove competition ' + data.id);
             Zawody.find({ _id: data.id }).remove().exec();
@@ -69,10 +80,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 					}
 						else{
 						objGrupa = grupa;
-						console.log('konie: ' + grupa);
 						grupa.sedziowie.forEach(function(sedzia){ // <-- jak null to sypie
-							//console.log('sedzia._id ' + sedzia);
-							//console.log('judgeId ' + judgeId);
 								if(sedzia == judgeId){
 									setTimeout(function() {
 										socket.emit('judge connected', objGrupa);
@@ -264,9 +272,13 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		var refreshRanking = function(spectatorEnter){ // true = podlaczanie klienta, false = do wszyst	
 			var horseList = [];
 			Zawody
-			 .findOne({ zakonczone: false })
+			 .findOne({ aktywne: true })
 			 .populate('grupy')
 			 .exec(function (err, zawody) {
+				if(zawody === null){
+					console.log('brak aktywnych zawodow');
+				}else{
+
 				zawody.grupy.forEach(function(grupa){
 					//console.log('grupa:' + grupa);
 					Grupa
@@ -301,14 +313,17 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 						});
 					});
 				});
+					
+				setTimeout(function() {
+					if(spectatorEnter === true){
+						socket.emit('get ranking', horseList);
+					}else{
+						socket.broadcast.emit('get ranking', horseList);
+					}
+				},300);	
+			   } //koniec ifa
 			});
-			setTimeout(function() {
-				if(spectatorEnter === true){
-					socket.emit('get ranking', horseList);
-				}else{
-					socket.broadcast.emit('get ranking', horseList);
-				}
-			},300);
+			
 		};
 		
 		// Podgląd głosów dla admina -------------------------
