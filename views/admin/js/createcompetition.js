@@ -75,7 +75,12 @@ var showGroupsFunc = function(idCompetitions, nameComp){
 			//console.log('one Group: ' + oneGroup.nazwa);
 			//console.log('one Groupid: ' + oneGroup._id);
 			//console.log('++++++++++');
-			var data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+			var data = [];
+			if(oneGroup.aktywna === true || oneGroup.oceniona === true){
+				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona,'','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+			}else{
+				data =[ oneGroup.nazwa, oneGroup.aktywna, oneGroup.oceniona, '<button class="start-' + oneGroup._id + '">Start</button>','<button class="delete-' + oneGroup._id + '">Usuń</button>' ];
+			}
 			data.id = oneGroup._id;
             showGroupsTable.row.add(data).draw();
 			
