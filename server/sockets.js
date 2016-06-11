@@ -291,14 +291,14 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 							 .populate('id_ocena')
 							 .exec(function (err, element) {
 								//console.log('element:' + element);
-								if(element.id_ocena === null){
+								if(element.id_ocena === undefined){
 									console.log('brak oceny');
 								}else{
 									Element
 									 .findOne({ _id: elementListy })
 									 .populate('id_horse')
 									 .exec(function (err, element2) {
-									//console.log('element2:' + element2);
+									//console.log('element.id_ocena' + element.id_ocena);
 									  var data = {
 										typ: element.id_ocena.typ, 
 										glowa: element.id_ocena.glowa,

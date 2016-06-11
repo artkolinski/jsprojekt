@@ -30,12 +30,12 @@ var loadVotesTable = function(tabelaWynikow){
 				list.ruch) / 5;
             var data =[ 
 				list.nazwaKonia, 
-				srednia, 
-				list.typ,
-				list.glowa,
-				list.kloda,
-				list.nogi,
-				list.ruch
+				srednia.toFixed(2), 
+				list.typ.toFixed(2),
+				list.glowa.toFixed(2),
+				list.kloda.toFixed(2),
+				list.nogi.toFixed(2),
+				list.ruch.toFixed(2)
 			];
             rankingTable.row.add(data).draw();
 		});
