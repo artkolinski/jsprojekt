@@ -112,9 +112,9 @@ var horsesToVote = [];
 
 var searchHorsesToVote = function(){
 	socket.on('fastReminder', function(reminderIdJudge){
-		console.log('fastReminder for ' + reminderIdJudge);
+		//console.log('fastReminder for ' + reminderIdJudge);
 		if(reminderIdJudge == judgeId){
-			console.log('fastReminder IN ');
+			console.log('fastReminder Activate');
 			fastReminder.style.display = 'block';
 		}
 	});		  
