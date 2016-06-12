@@ -71,6 +71,19 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 		
 		socket.on('judge connected', function (judgeId) { 
 			var objGrupa;
+			var ratingsType;
+			Zawody
+				.findOne({ aktywne: true })
+				.exec(function (err, zawody) {
+				if(zawody === null){
+					console.log('brak aktywnych zawodow');
+				}
+				else{
+					console.log('zawody.ocena: ' + zawody.ocena);
+					ratingsType = zawody.ocena;
+				}
+			});	
+			
 			Grupa
 				.findOne({ aktywna: true, oceniona: false })
 				.populate('listastartowa') // <--
@@ -83,7 +96,7 @@ module.exports = function (io, Horse, Account, Element, Grupa, Ocena, OcenaSedzi
 						grupa.sedziowie.forEach(function(sedzia){ // <-- jak null to sypie
 								if(sedzia == judgeId){
 									setTimeout(function() {
-										socket.emit('judge connected', objGrupa);
+										socket.emit('judge connected', {objGrupa:objGrupa, ratingsType:ratingsType});
 									},300);
 								}	
 						});
